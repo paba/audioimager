@@ -1,0 +1,12 @@
+package imager;
+
+public class ImageData {
+	
+	int startTime;
+	int endTime;
+	
+	String path;
+	
+	
+
+}

@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226189438
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226190438
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275226192750
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226201422
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226203719
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275226214250
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226261125
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226262297
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226263250
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226263281
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275226263281
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275226334188
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226384469
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226690656
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275226690859
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275226706281
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226713234
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226714313
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226715375
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275226715422
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275226715438
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275226727688
+executed,command,org.eclipse.ui,3.4.1.M20080910-0800,org.eclipse.ui.edit.delete,1275226772203
+no handler,command,org.eclipse.datatools.sqltools.result,,org.eclipse.datatools.sqltools.result.removeAllInstances,1275226778484
+executed,command,org.eclipse.ui,3.4.1.M20080910-0800,org.eclipse.ui.edit.delete,1275226821781

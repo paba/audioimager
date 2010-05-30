@@ -1,0 +1,12 @@
+package imager;
+
+public class RunChooser extends Thread{
+	FileChooser chooser ;
+	
+	RunChooser(FileChooser chooser)
+	
+	
+
+	
+	
+}

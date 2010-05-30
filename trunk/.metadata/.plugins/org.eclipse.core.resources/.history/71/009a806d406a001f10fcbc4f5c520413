@@ -1,0 +1,17 @@
+package imager;
+
+public class FileData {
+	private String filePath ;
+	
+	public void setFilePath(String path)
+	{
+		filePath = path ;
+		
+	}
+	public String getFilePath()
+	{
+		System.out.println(filePath);
+		return filePath;
+		
+	}
+}
