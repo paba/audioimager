@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048902536
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048906411
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275048906583
+activated,view,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.views.FormView,1275048908505
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275048914473
+activated,view,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.views.FormView,1275048915848
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048940208
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048944442
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048946551
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048946692
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275048946692
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275048948661
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048950442
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048952989
+activated,view,org.eclipse.ui.console,3.3.0.v20080529-1300,org.eclipse.ui.console.ConsoleView,1275048953145
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048954176
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048955723
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275048958223
+activated,view,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.views.FormView,1275048960270
+no handler,command,org.eclipse.ui,3.4.1.M20080910-0800,org.eclipse.ui.edit.delete,1275048984067
+no handler,command,org.eclipse.ui,3.4.1.M20080910-0800,org.eclipse.ui.edit.delete,1275048984270
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048986005
+activated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275048987583
+activated,editor,com.cloudgarden.jigloo,4.6.1,com.cloudgarden.jigloo.editors.FormEditor,1275048989505
+deactivated,workbench,org.eclipse.ui.workbench,3.4.1.M20080827-0800a,,1275049021036

@@ -1,0 +1,13 @@
+package imager;
+
+public class FileData {
+	public String filePath;
+	
+	FileData()
+	{
+		
+		filePath = new String();
+		
+	}
+
+}

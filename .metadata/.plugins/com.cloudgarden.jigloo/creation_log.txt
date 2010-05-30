@@ -1,0 +1,151 @@
+Creating elements for MainFrame.java
+
+
+>>>  about to create class com.cloudgarden.layout.AnchorLayout, constructor=public com.cloudgarden.layout.AnchorLayout()
+<<< created class com.cloudgarden.layout.AnchorLayout
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+
+    >>>  about to create class com.cloudgarden.layout.AnchorConstraint
+    <<< created class com.cloudgarden.layout.AnchorConstraint
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+
+    >>>  about to create class java.awt.Dimension
+    <<< created class java.awt.Dimension
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class com.cloudgarden.layout.AnchorConstraint, constructor=public com.cloudgarden.layout.AnchorConstraint(int,int,int,int,int,int,int,int)
+<<< created class com.cloudgarden.layout.AnchorConstraint
+
+>>>  about to create class java.awt.Dimension, constructor=public java.awt.Dimension(int,int)
+<<< created class java.awt.Dimension
+
+>>>  about to create class javax.swing.ImageIcon, constructor=public javax.swing.ImageIcon(java.lang.String)
+
+    >>>  about to create class java.lang.String, constructor=public java.lang.String()
+    <<< created class java.lang.String
+
+    >>>  about to create class javax.swing.ImageIcon
+    <<< created class javax.swing.ImageIcon
+<<< created class javax.swing.ImageIcon
+
+>>>  about to create class javax.swing.ImageIcon, constructor=public javax.swing.ImageIcon()
+<<< error trying to make class javax.swing.ImageIcon, java.lang.IllegalArgumentException
+<<< error creating class javax.swing.ImageIcon, java.lang.IllegalArgumentException
+
+>>>  about to create class javax.swing.ImageIcon, constructor=public javax.swing.ImageIcon()
+<<< error trying to make class javax.swing.ImageIcon, java.lang.IllegalArgumentException
+<<< error creating class javax.swing.ImageIcon, java.lang.IllegalArgumentException
+
+>>>  about to create class javax.swing.JFrame, constructor=public javax.swing.JFrame() throws java.awt.HeadlessException
+<<< created class javax.swing.JFrame
+
+>>>  about to create class javax.swing.JButton, constructor=public javax.swing.JButton()
+<<< created class javax.swing.JButton
+
+>>>  about to create class javax.swing.JButton, constructor=public javax.swing.JButton()
+<<< created class javax.swing.JButton
+
+>>>  about to create class javax.swing.JTextField, constructor=public javax.swing.JTextField()
+<<< created class javax.swing.JTextField
+
+>>>  about to create class javax.swing.JTextField, constructor=public javax.swing.JTextField()
+<<< created class javax.swing.JTextField
+
+>>>  about to create class javax.swing.JLabel, constructor=public javax.swing.JLabel()
+<<< created class javax.swing.JLabel
+
+>>>  about to create class javax.swing.JLabel, constructor=public javax.swing.JLabel()
+<<< created class javax.swing.JLabel
+
+>>>  about to create class javax.swing.JButton, constructor=public javax.swing.JButton()
+<<< created class javax.swing.JButton
+
+>>>  about to create class javax.swing.JScrollPane, constructor=public javax.swing.JScrollPane()
+<<< created class javax.swing.JScrollPane
+
+>>>  about to create class javax.swing.ScrollPaneLayout
+<<< created class javax.swing.ScrollPaneLayout
+
+>>>  about to create class javax.swing.ScrollPaneLayout$UIResource
+<<< created class javax.swing.ScrollPaneLayout$UIResource
+
+>>>  about to create class javax.swing.JSlider, constructor=public javax.swing.JSlider()
+<<< created class javax.swing.JSlider
+
+>>>  about to create class javax.swing.JLabel, constructor=public javax.swing.JLabel()
+<<< created class javax.swing.JLabel
+
+>>>  about to create class javax.swing.JTextField, constructor=public javax.swing.JTextField()
+<<< created class javax.swing.JTextField
+
+>>>  about to create class javax.swing.JButton, constructor=public javax.swing.JButton()
+<<< created class javax.swing.JButton
+
+>>>  about to create class javax.swing.JLabel, constructor=public javax.swing.JLabel()
+<<< created class javax.swing.JLabel
