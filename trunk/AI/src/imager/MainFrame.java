@@ -5,13 +5,19 @@ import com.cloudgarden.layout.AnchorLayout;
 import java.applet.AudioClip;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.KeyAdapter;
@@ -21,19 +27,32 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerNumberModel;
 
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import javax.swing.SwingUtilities;
 
 
@@ -55,20 +74,32 @@ public class MainFrame extends javax.swing.JFrame {
 	private JLabel imgLabel;
 	private JButton btnBrowse;
 	private JSlider slider;
+	private JTable tblImage;
+	private JScrollPane jScrollPane2;
+	private JPanel jPanel1;
 	private JButton btnStop;
 	private JButton btnPlay;
 	private JButton btnAdd;
-	private JTextField txtStartTime;
-	private JTextField txtEndTime;
+	private JSpinner spinnerEndTime;
+	private JSpinner spinnerStartTime;
+	private JScrollPane scrollSlider;
+	private JButton btnAudioBrowse;
+	private JTextField txtAudio;
+	private JLabel lblAudio;
 	private JLabel jLabel3;
 	private JLabel jLabel2;
-	private JScrollPane jScrollPane1;
-	
+
 	private ArrayList<ImageData> imageArray;
 	private int startTime;
 	private int endTime;
 	private String path;
 	private int sliderPosition ;
+	private int cellWidth;
+	private int tableWidth;
+	private double spacing;
+	private TableModel tblImageModel;
+	private ImageData selectedImage;
+
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
@@ -86,6 +117,7 @@ public class MainFrame extends javax.swing.JFrame {
 		super();
 		initGUI();
 		initVariables();
+	
 	}
 	
 	private void initGUI() {
@@ -93,6 +125,46 @@ public class MainFrame extends javax.swing.JFrame {
 			AnchorLayout thisLayout = new AnchorLayout();
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			{
+				/*SpinnerListModel spinnerStartTimeModel = 
+					new SpinnerListModel(
+							new String[] { "Sun", "Mon" , "Tue" , "Wed" , "Thu" , "Fri" , "Sat" });*/
+				Number value = 0;
+				Number stetpsize =1;
+				
+				SpinnerNumberModel spinnerStartTimeModel = new SpinnerNumberModel(value,0,null,stetpsize); 
+				spinnerStartTime = new JSpinner();
+				getContentPane().add(spinnerStartTime, new AnchorConstraint(376, 714, 405, 651, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				spinnerStartTime.setModel(spinnerStartTimeModel);
+				spinnerStartTime.setPreferredSize(new java.awt.Dimension(80, 29));
+				spinnerStartTime.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent evt) {
+						spinnerStartTimeStateChanged(evt);
+					}
+				});
+			}
+			{
+				btnAudioBrowse = new JButton();
+				getContentPane().add(btnAudioBrowse, new AnchorConstraint(77, 571, 107, 483, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnAudioBrowse.setText("Browse");
+				btnAudioBrowse.setPreferredSize(new java.awt.Dimension(112, 30));
+				btnAudioBrowse.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAudioBrowseActionPerformed(evt);
+					}
+				});
+			}
+			{
+				txtAudio = new JTextField();
+				getContentPane().add(txtAudio, new AnchorConstraint(77, 465, 108, 126, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				txtAudio.setPreferredSize(new java.awt.Dimension(431, 31));
+			}
+			{
+				lblAudio = new JLabel();
+				getContentPane().add(lblAudio, new AnchorConstraint(71, 126, 104, 58, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				lblAudio.setText("Add Audio");
+				lblAudio.setPreferredSize(new java.awt.Dimension(86, 33));
+			}
 			{
 				btnStop = new JButton();
 				getContentPane().add(btnStop, new AnchorConstraint(941, 60, 963, 9, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
@@ -114,16 +186,6 @@ public class MainFrame extends javax.swing.JFrame {
 						}
 					}
 				});
-			}
-			{
-				txtStartTime = new JTextField();
-				getContentPane().add(txtStartTime, new AnchorConstraint(374, 709, 406, 648, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtStartTime.setPreferredSize(new java.awt.Dimension(77, 32));
-			}
-			{
-				txtEndTime = new JTextField();
-				getContentPane().add(txtEndTime, new AnchorConstraint(417, 708, 454, 648, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtEndTime.setPreferredSize(new java.awt.Dimension(77, 36));
 			}
 			{
 				jLabel3 = new JLabel();
@@ -149,29 +211,100 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			{
-				jScrollPane1 = new JScrollPane();
-				getContentPane().add(jScrollPane1, new AnchorConstraint(895, 962, 981, 87, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				jScrollPane1.setPreferredSize(new java.awt.Dimension(1113, 85));
+				jPanel1 = new JPanel();
+				getContentPane().add(jPanel1, new AnchorConstraint(782, 961, 991, 68, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
+				GridLayout jPanel1Layout = new GridLayout(2, 1);
+				jPanel1Layout.setColumns(1);
+				jPanel1Layout.setHgap(5);
+				jPanel1Layout.setVgap(5);
+				jPanel1.setLayout(jPanel1Layout);
+				jPanel1.setPreferredSize(new java.awt.Dimension(1136, 207));
 				{
-					slider = new JSlider();
-					jScrollPane1.setViewportView(slider);
-					slider.setMinorTickSpacing(1);
-					slider.setMajorTickSpacing(5);
-					slider.setPaintTicks(true);
-					slider.setSnapToTicks(true);
-					slider.setPaintTrack(false);
-					slider.setPaintLabels(true);
-					slider.setToolTipText("The value is 50");
-					slider.setValue(0);
-					slider.setMaximum(30);
-					//getContentPane().add(slider, BorderLayout.CENTER);
-					slider.setPreferredSize(new java.awt.Dimension(1095, 105));
-					slider.addMouseListener(new MouseAdapter() {
-						public void mouseReleased(MouseEvent evt) {
-							sliderMouseReleased(evt);
+					scrollSlider = new JScrollPane();
+					//scrollSlider.getHorizontalScrollBar().setVisible(false);
+					//scrollSlider.getHorizontalScrollBar().setAutoscrolls(false);
+					scrollSlider.remove(scrollSlider.getHorizontalScrollBar());
+					jPanel1.add(scrollSlider);
+					scrollSlider.setPreferredSize(new java.awt.Dimension(1119, 101));
+					{
+						slider = new JSlider();
+						scrollSlider.setViewportView(slider);
+						slider.setMinorTickSpacing(1);
+						slider.setMajorTickSpacing(5);
+						slider.setPaintTicks(true);
+						slider.setSnapToTicks(true);
+						slider.setPaintTrack(false);
+						slider.setPaintLabels(true);
+						
+						slider.setValue(0);
+						slider.setMaximum(400);
+						
+						//getContentPane().add(slider, BorderLayout.CENTER);
+						slider.setPreferredSize(new java.awt.Dimension(3007, 83));
+						slider.addMouseListener(new MouseAdapter() {
+							public void mouseReleased(MouseEvent evt) {
+								sliderMouseReleased(evt);
+							}
+						});
+						
+					}
+					
+				}
+				{
+					jScrollPane2 = new JScrollPane();
+					jPanel1.add(jScrollPane2);
+					jScrollPane2.setPreferredSize(new java.awt.Dimension(1136, 101));
+					jScrollPane2.getHorizontalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+						public void adjustmentValueChanged(AdjustmentEvent evt) {
+							horizontalScrollBarAdjustmentValueChanged(evt);
 						}
 					});
+				
+					
+					{
+						
+						/*TableModel tblImageModel = 
+							new DefaultTableModel(
+									new String[][] { { "" }},
+									new String[] { ""}); */
+									
+									tblImageModel = new ImageTableModel();
+									//((DefaultTableModel) tblImageModel).setColumnCount(1);
+									
+									
+									tblImage = new JTable();
+									tblImage.setModel(tblImageModel);
+									
+									CardLayout tblImageLayout = new CardLayout();
+									tblImageLayout.setHgap(400);
+									tblImage.setLayout(tblImageLayout);
+									tblImage.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+									//tblImage.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+								
+									jScrollPane2.setViewportView(tblImage);
+									
+									tblImage.setAutoscrolls(false);
+									tblImage.setCellSelectionEnabled(true);
+									tblImage.setColumnSelectionAllowed(true);
+									tblImage.setRowHeight(56);
+									
+									
+									tblImage.setDragEnabled(true);
+									tblImage.setShowVerticalLines(true);
+									tblImage.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+									tblImage.setFillsViewportHeight(true);
+									tblImage.addMouseListener(new MouseAdapter() {
+										public void mouseReleased(MouseEvent evt) {
+											tblImageMouseReleased(evt);
+										}
+									});
+									tblImage.addFocusListener(new FocusAdapter() {
+										public void focusGained(FocusEvent evt) {
+											tblImageFocusGained(evt);
+										}
+									});
 
+					}
 				}
 			}
 			{
@@ -196,6 +329,7 @@ public class MainFrame extends javax.swing.JFrame {
 				getContentPane().add(btnBrowse, new AnchorConstraint(134, 572, 178, 483, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnBrowse.setText("Browse");
 				btnBrowse.setPreferredSize(new java.awt.Dimension(113, 43));
+				btnBrowse.setMinimumSize(new java.awt.Dimension(75, 56));
 				btnBrowse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnBrowseActionPerformed(evt);
@@ -206,8 +340,20 @@ public class MainFrame extends javax.swing.JFrame {
 			{
 				jLabel1 = new JLabel();
 				getContentPane().add(jLabel1, new AnchorConstraint(128, 127, 182, 61, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				jLabel1.setText("Add Audio Track");
+				jLabel1.setText("Add Images");
 				jLabel1.setPreferredSize(new java.awt.Dimension(84, 53));
+			}
+			{
+				Number value = 0;
+				Number stetpsize =1;
+				
+				SpinnerNumberModel spinnerEndTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
+				
+				spinnerEndTime = new JSpinner();
+				getContentPane().add(spinnerEndTime, new AnchorConstraint(420, 715, 447, 651, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				spinnerEndTime.setModel(spinnerEndTimeModel);
+				spinnerEndTime.setValue(value);
+				spinnerEndTime.setPreferredSize(new java.awt.Dimension(82, 27));
 			}
 			pack();
 			Toolkit toolkit = java.awt.Toolkit.getDefaultToolkit();
@@ -225,6 +371,10 @@ public class MainFrame extends javax.swing.JFrame {
 		endTime = 0;
 		path = null;
 		sliderPosition = 0;
+		cellWidth = 0 ;
+		tableWidth = 0 ;
+		spacing = 0 ;
+		
 	}
 	
 	private void btnBrowseActionPerformed(ActionEvent evt) {
@@ -234,13 +384,15 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 	
 	private void txtImageLinkPropertyChange(PropertyChangeEvent evt) {
-		System.out.println("txtImageLink.propertyChange, event="+evt);
+		
 		path =txtImageLink.getText();
+		System.out.println(path);
 		if(imgLabel.getHeight()>0 && imgLabel.getWidth()>0 && !path.equals(""))
 		{
 		ResizeImage resizeImage = new ResizeImage(imgLabel.getHeight(),imgLabel.getWidth());
 		Image image = new ImageIcon(path).getImage();
 		Image scaledImage = resizeImage.resize(path);
+		selectedImage = new ImageData(-1,-1,-1,path);
 		ImageIcon icon = new ImageIcon(scaledImage);
 		imgLabel.setIcon(icon);
 		txtImageLink.setText("");
@@ -249,12 +401,53 @@ public class MainFrame extends javax.swing.JFrame {
 	
 	private void btnAddActionPerformed(ActionEvent evt) {
 		System.out.println("btnAdd.actionPerformed, event="+evt);
-		startTime = Integer.parseInt(txtStartTime.getText());
-		endTime = Integer.parseInt(txtEndTime.getText());
+		Number startvalue = (Number) spinnerStartTime.getValue();
+		Number endValue = (Number) spinnerEndTime.getValue();
+		startTime = startvalue.intValue();
+		endTime = endValue.intValue();
 		ImageData idata = new ImageData(startTime,endTime,imageArray.size(),path);
 		imageArray.add(idata);
-		slider.setMaximum(endTime);
 		
+		if(endTime >slider.getMaximum())
+		{	
+		slider.setMaximum(endTime);
+		spacing = (slider.getWidth()/endTime);
+		}
+		else
+		{
+		
+		spacing = (double)slider.getWidth()/slider.getMaximum();	
+		System.out.println("spacing " +spacing+ "slider width "+slider.getWidth() + " slider max "+ slider.getMaximum());
+		}	
+		cellWidth = (int) (spacing*(endTime - startTime));
+		tableWidth = (int) (spacing*endTime);
+		System.out.println("tableWidth "+tableWidth +"cell Width"+ cellWidth);
+		if(imageArray.size()== 1)
+		{
+		
+		/*tblImage.setSize(tableWidth,56);	
+		tblImage.getColumnModel().addColumn(new TableColumn(0,cellWidth));
+		TableCellRenderer mycellrenderer = new MyTableCellRenderer();
+		tblImage.getColumnModel().getColumn(0).setCellRenderer(mycellrenderer);
+		tblImageModel.setValueAt(idata, 0,0 );
+		System.out.println("cellwidth ="+cellWidth+"tablewidth ="+ tableWidth + "table height" + tblImage.getHeight());*/
+	
+		//tblImage.getColumnModel().addColumn(new TableColumn(0,5));	
+		//cellWidth = cellWidth +17;
+		//tableWidth = tableWidth +17;
+		cellWidth = cellWidth +17;
+		tableWidth = tableWidth + 17;
+		}
+		//else
+		{
+			 tblImage.setSize(tableWidth,tblImage.getHeight());
+			 //tblImage.getColumnModel().getColumn(imageArray.size()-1).setWidth(cellWidth);
+			 tblImage.getColumnModel().addColumn(new TableColumn(imageArray.size()-1,cellWidth));
+			 TableCellRenderer mycellrenderer = new MyTableCellRenderer();
+			 tblImage.getColumnModel().getColumn(imageArray.size()-1).setCellRenderer(mycellrenderer);
+			 tblImage.setValueAt(idata, 0,imageArray.size()-1);
+			 System.out.println("cellwidth ="+cellWidth+"tablewidth ="+ tableWidth + "table height" + tblImage.getHeight());
+		}
 		
 		//TODO add your code for btnAdd.actionPerformed
 	}
@@ -263,15 +456,17 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println("slider.mouseReleased, event="+evt);
 		//TODO add your code for slider.mouseReleased
 		sliderPosition = slider.getValue();
-		ImageData image = findImage(sliderPosition);
-		if(! image.equals(null))
+		slider.setToolTipText("The value is "+ sliderPosition);
+		//scrollSlider.getHorizontalScrollBar().setValue(sliderPosition);
+		//scrollSlider.getHorizontalScrollBar().setEnabled(true);
+		selectedImage = findImage(sliderPosition);
+		if(! selectedImage.equals(null))
 		{
-			path =image.getPath();
+			path =selectedImage.getPath();
 			Image image2 = new ImageIcon(path).getImage();
 			ResizeImage resizeImage = new ResizeImage(480,640);
 			Image scaledImage = resizeImage.resize(path);
 			ImageIcon icon = new ImageIcon(scaledImage);
-			
 			imgLabel.setIcon(icon);
 						
 		}
@@ -304,6 +499,76 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 	
+	private void btnAudioBrowseActionPerformed(ActionEvent evt) {
+		System.out.println("btnAudioBrowse.actionPerformed, event="+evt);
+		System.out.println("btnBrowse.actionPerformed, event="+evt);
+		FileChooser fc = new FileChooser(txtAudio);
+	}
 	
+
+	
+	private void horizontalScrollBarAdjustmentValueChanged(AdjustmentEvent evt) {
+		System.out.println("jScrollPane2.getHorizontalScrollBar().adjustmentValueChanged, event="+evt);
+		scrollSlider.getHorizontalScrollBar().setValue(jScrollPane2.getHorizontalScrollBar().getValue());
+	}
+	
+	private void tblImageFocusGained(FocusEvent evt) {
+		
+	}
+	
+	private void tblImageMouseReleased(MouseEvent evt) {
+		System.out.println("tblImage.focusGained, event="+evt);
+		int selecteColumn = tblImage.getSelectedColumn();
+		selectedImage =(ImageData) tblImage.getModel().getValueAt(0,selecteColumn);
+		if(! selectedImage.equals(null))
+		{
+			path =selectedImage.getPath();
+			Image image2 = new ImageIcon(path).getImage();
+			ResizeImage resizeImage = new ResizeImage(480,640);
+			Image scaledImage = resizeImage.resize(path);
+			ImageIcon icon = new ImageIcon(scaledImage);
+			imgLabel.setIcon(icon);
+			Number startValue = selectedImage.getStartTime();
+			Number endValue = selectedImage.getEndTime();
+			spinnerStartTime.setValue(startValue);
+			spinnerEndTime.setValue(endValue);
+			
+						
+		}
+	}
+	
+	private void spinnerStartTimeStateChanged(ChangeEvent evt) {
+		System.out.println("spinnerStartTime.stateChanged, event="+evt);
+		System.out.println(selectedImage.getIndex());
+		//TODO add your code for spinnerStartTime.stateChanged
+		Number value = (Number) spinnerStartTime.getValue();
+		int startTime = value.intValue();
+		
+		if(selectedImage.getIndex()>0)
+		{
+			ImageData image1= (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()-1);
+			ImageData image2 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex());
+			if(startTime < selectedImage.getStartTime())
+			{	
+			
+			int timeDifference = selectedImage.getStartTime()-startTime;
+			image1.setEndTime(image1.getEndTime()- timeDifference );
+			System.out.println(timeDifference);
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setWidth((int) (spacing*(image1.getEndTime()-image1.getStartTime())));
+			TableCellRenderer mycellrenderer = new MyTableCellRenderer();
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setCellRenderer(mycellrenderer);
+			
+			tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
+			System.out.println("old Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
+			
+			System.out.println("New Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
+			
+			image2.setStartTime(startTime);
+			tblImage.setValueAt(image2,0,selectedImage.getIndex());
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+		
+			}
+		}
+	}
 
 }

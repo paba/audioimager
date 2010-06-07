@@ -32,5 +32,14 @@ public class ImageData {
 	{
 		return path;
 	}
+	public void setStartTime(int stime)
+	{
+		this.startTime = stime;
+	}
+	public void setEndTime(int etime)
+	{
+		this.endTime = etime;
+	}
+	
 
 }
