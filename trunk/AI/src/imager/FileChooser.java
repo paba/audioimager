@@ -98,14 +98,17 @@ public class FileChooser extends javax.swing.JFrame{
 		if(evt.getActionCommand().toString().equals(filechooser.APPROVE_SELECTION))
 		{
 			String absolutePath = filechooser.getSelectedFile().getCanonicalPath();
-			//System.out.println(absolutePath);
 			imageTxt.setText(absolutePath);
 			imageTxt.firePropertyChange("Text", 0,1);
 			this.dispose();
 			
 			
 		}
-		//TODO add your code for filechooser.actionPerformed
+		else if(evt.getActionCommand().toString().equals(filechooser.CANCEL_SELECTION))
+		{
+			this.dispose();
+		}	
+		
 	}
 	
 
