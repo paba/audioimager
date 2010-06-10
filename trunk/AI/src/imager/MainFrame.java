@@ -94,12 +94,19 @@ public class MainFrame extends javax.swing.JFrame {
 	private int startTime;
 	private int endTime;
 	private String path;
+	private String audioPath;
 	private int sliderPosition ;
 	private int cellWidth;
 	private int tableWidth;
 	private double spacing;
 	private TableModel tblImageModel;
 	private ImageData selectedImage;
+	float tickWeight;
+	int audioDuration;
+	int noOfAudioSamples;
+	DecodeAndPlayAudio audioDecoder;
+	Thread audioPlayerThread;
+	
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -159,6 +166,11 @@ public class MainFrame extends javax.swing.JFrame {
 				txtAudio = new JTextField();
 				getContentPane().add(txtAudio, new AnchorConstraint(77, 465, 108, 126, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				txtAudio.setPreferredSize(new java.awt.Dimension(431, 31));
+				txtAudio.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						txtAudioPropertyChange(evt);
+					}
+				});
 			}
 			{
 				lblAudio = new JLabel();
@@ -174,17 +186,12 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnPlay = new JButton();
-				getContentPane().add(btnPlay, new AnchorConstraint(895, 60, 921, 9, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnPlay, new AnchorConstraint(694, 84, 766, 11, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnPlay.setText("Play");
-				btnPlay.setPreferredSize(new java.awt.Dimension(65, 26));
+				btnPlay.setPreferredSize(new java.awt.Dimension(74, 39));
 				btnPlay.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						try {
-							btnPlayActionPerformed(evt);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						btnPlayActionPerformed(evt);
 					}
 				});
 			}
@@ -241,7 +248,7 @@ public class MainFrame extends javax.swing.JFrame {
 						slider.setMaximum(400);
 						
 						//getContentPane().add(slider, BorderLayout.CENTER);
-						slider.setPreferredSize(new java.awt.Dimension(3007, 83));
+						slider.setPreferredSize(new java.awt.Dimension(3006, 61));
 						slider.addMouseListener(new MouseAdapter() {
 							public void mouseReleased(MouseEvent evt) {
 								sliderMouseReleased(evt);
@@ -294,6 +301,7 @@ public class MainFrame extends javax.swing.JFrame {
 									tblImage.setShowVerticalLines(true);
 									tblImage.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 									tblImage.setFillsViewportHeight(true);
+									//tblImage.setPreferredSize(new java.awt.Dimension(54, 54));
 									//tblImage.setPreferredSize(new java.awt.Dimension(91, 98));
 									tblImage.addMouseListener(new MouseAdapter() {
 										public void mouseReleased(MouseEvent evt) {
@@ -353,10 +361,10 @@ public class MainFrame extends javax.swing.JFrame {
 				SpinnerNumberModel spinnerEndTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
 				
 				spinnerEndTime = new JSpinner();
-				getContentPane().add(spinnerEndTime, new AnchorConstraint(420, 715, 447, 651, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerEndTime, new AnchorConstraint(421, 717, 449, 653, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerEndTime.setModel(spinnerEndTimeModel);
 				spinnerEndTime.setValue(value);
-				spinnerEndTime.setPreferredSize(new java.awt.Dimension(82, 27));
+				spinnerEndTime.setPreferredSize(new java.awt.Dimension(65, 15));
 				spinnerEndTime.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent evt) {
 						spinnerEndTimeStateChanged(evt);
@@ -378,10 +386,16 @@ public class MainFrame extends javax.swing.JFrame {
 		startTime = 0;
 		endTime = 0;
 		path = null;
+		audioPath = null;
 		sliderPosition = 0;
 		cellWidth = 0 ;
 		tableWidth = 0 ;
 		spacing = 0 ;
+		tickWeight = 0 ;
+		audioDuration = 0 ;
+		noOfAudioSamples = 0 ;
+		audioDecoder= null;
+		audioPlayerThread = null;
 		
 	}
 	
@@ -469,7 +483,7 @@ public class MainFrame extends javax.swing.JFrame {
 		//scrollSlider.getHorizontalScrollBar().setValue(sliderPosition);
 		//scrollSlider.getHorizontalScrollBar().setEnabled(true);
 		selectedImage = findImage(sliderPosition);
-		if(! selectedImage.equals(null))
+		if(selectedImage != null)
 		{
 			path =selectedImage.getPath();
 			Image image2 = new ImageIcon(path).getImage();
@@ -478,6 +492,25 @@ public class MainFrame extends javax.swing.JFrame {
 			ImageIcon icon = new ImageIcon(scaledImage);
 			imgLabel.setIcon(icon);
 						
+		}
+		if( (audioDuration != 0))
+		{
+			if(audioPlayerThread == null)
+			{
+				audioDecoder.startingPoint = (int)(sliderPosition*tickWeight);
+				audioPlayerThread = new Thread(audioDecoder);
+				audioPlayerThread.start();
+				btnPlay.setText("Pause");
+			}
+			else
+			{
+				audioPlayerThread.stop();
+				audioDecoder.startingPoint =(int)(sliderPosition*tickWeight);
+				audioDecoder.slider.setValue((int)(sliderPosition*tickWeight));
+				audioPlayerThread = new Thread(audioDecoder);
+				audioPlayerThread.start();
+				btnPlay.setText("Pause");
+			}
 		}
 	}
 	
@@ -497,14 +530,43 @@ public class MainFrame extends javax.swing.JFrame {
 		return null;
 	}
 	
-	private void btnPlayActionPerformed(ActionEvent evt) throws InterruptedException{
+	private void btnPlayActionPerformed(ActionEvent evt){
 		System.out.println("btnPlay.actionPerformed, event="+evt);
-		{
+		/*{
 		    ++sliderPosition;
 		    System.out.println(sliderPosition);
 			slider.setValue(sliderPosition);
 			slider.firePropertyChange(getName(), 0, 1);
 			
+		}*/
+		if(audioDuration!=0)
+		{
+			audioDecoder.startingPoint = (int)(slider.getValue()*tickWeight);
+			audioDecoder.slider = this.slider;
+			if(audioPlayerThread==null)
+			{
+				audioPlayerThread = new Thread(audioDecoder);
+				audioPlayerThread.start();
+				btnPlay.setText("Pause");
+			}	
+			else
+			{
+			 
+			 if(btnPlay.getText().equals("Pause"))
+			 {
+				 audioPlayerThread.stop();
+				 btnPlay.setText("Play");
+			 }
+			 else 
+			 {
+				 audioDecoder.startingPoint = (int)(slider.getValue()*tickWeight);
+				 audioPlayerThread = new Thread(audioDecoder);
+				 audioPlayerThread.start();
+				 btnPlay.setText("Pause");
+				 
+			 }
+			 
+			}
 		}
 	}
 	
@@ -666,5 +728,26 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 		
 	}
+	
+	private void txtAudioPropertyChange(PropertyChangeEvent evt) {
+		System.out.println("txtAudio.propertyChange, event="+evt);
+		audioPath=txtAudio.getText();
+		System.out.println(audioPath);
+		if(!audioPath.equals(""))
+		{
+			audioDecoder = new DecodeAndPlayAudio();
+			AudioData audioData = audioDecoder.getAudioData(audioPath);
+			audioDuration = audioData.getSongDuration();
+			noOfAudioSamples = audioData.getSongLength();
+			tickWeight = (float)(noOfAudioSamples/audioDuration);
+			if(slider.getMaximum()< audioDuration)
+			{
+				slider.setMaximum(audioData.getSongDuration());
+			}
+			
+		}
+	}
+	
+
 
 }
