@@ -18,8 +18,8 @@ public class MyTableCellRenderer extends DefaultTableCellRenderer {
         ImageData imagedata = (ImageData) value;
         String status = imagedata.getPath();
        
-       Image image = new ImageIcon(imagedata.getPath()).getImage();
-       ImageIcon icon = new ImageIcon(image);
+       //Image image = new ImageIcon(imagedata.getPath()).getImage();
+       ImageIcon icon = new ImageIcon(imagedata.getImage());
        if(icon == null){
                         label.setText(status);
                 }else{
