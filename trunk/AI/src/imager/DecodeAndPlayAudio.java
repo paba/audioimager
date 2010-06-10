@@ -230,6 +230,7 @@ public class DecodeAndPlayAudio implements Runnable{
 	      }
 	      
 	    }
+	    slider.setValue(0);
 	    /*
 	     * Technically since we're exiting anyway, these will be cleaned up by 
 	     * the garbage collector... but because we're nice people and want

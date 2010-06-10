@@ -249,7 +249,15 @@ public class MainFrame extends javax.swing.JFrame {
 						
 						//getContentPane().add(slider, BorderLayout.CENTER);
 						slider.setPreferredSize(new java.awt.Dimension(3006, 61));
+						slider.addChangeListener(new ChangeListener() {
+							public void stateChanged(ChangeEvent evt) {
+								sliderStateChanged(evt);
+							}
+						});
 						slider.addMouseListener(new MouseAdapter() {
+							public void mousePressed(MouseEvent evt) {
+								sliderMousePressed(evt);
+							}
 							public void mouseReleased(MouseEvent evt) {
 								sliderMouseReleased(evt);
 							}
@@ -361,7 +369,7 @@ public class MainFrame extends javax.swing.JFrame {
 				SpinnerNumberModel spinnerEndTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
 				
 				spinnerEndTime = new JSpinner();
-				getContentPane().add(spinnerEndTime, new AnchorConstraint(421, 717, 449, 653, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerEndTime, new AnchorConstraint(421, 718, 449, 654, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerEndTime.setModel(spinnerEndTimeModel);
 				spinnerEndTime.setValue(value);
 				spinnerEndTime.setPreferredSize(new java.awt.Dimension(65, 15));
@@ -414,7 +422,7 @@ public class MainFrame extends javax.swing.JFrame {
 		ResizeImage resizeImage = new ResizeImage(imgLabel.getHeight(),imgLabel.getWidth());
 		Image image = new ImageIcon(path).getImage();
 		Image scaledImage = resizeImage.resize(path);
-		selectedImage = new ImageData(-1,-1,-1,path);
+		selectedImage = new ImageData(-1,-1,-1,path,scaledImage);
 		ImageIcon icon = new ImageIcon(scaledImage);
 		imgLabel.setIcon(icon);
 		txtImageLink.setText("");
@@ -427,7 +435,7 @@ public class MainFrame extends javax.swing.JFrame {
 		Number endValue = (Number) spinnerEndTime.getValue();
 		startTime = startvalue.intValue();
 		endTime = endValue.intValue();
-		ImageData idata = new ImageData(startTime,endTime,imageArray.size(),path);
+		ImageData idata = new ImageData(startTime,endTime,imageArray.size(),path,selectedImage.getImage());
 		imageArray.add(idata);
 		
 		if(endTime >slider.getMaximum())
@@ -472,24 +480,21 @@ public class MainFrame extends javax.swing.JFrame {
 			 tblImage.getColumnModel().getColumn(imageArray.size()-1).setResizable(true);
 		}
 		
-		//TODO add your code for btnAdd.actionPerformed
+		
 	}
 	
 	private void sliderMouseReleased(MouseEvent evt) {
 		System.out.println("slider.mouseReleased, event="+evt);
-		//TODO add your code for slider.mouseReleased
 		sliderPosition = slider.getValue();
 		slider.setToolTipText("The value is "+ sliderPosition);
-		//scrollSlider.getHorizontalScrollBar().setValue(sliderPosition);
-		//scrollSlider.getHorizontalScrollBar().setEnabled(true);
 		selectedImage = findImage(sliderPosition);
 		if(selectedImage != null)
 		{
-			path =selectedImage.getPath();
+			/*path =selectedImage.getPath();
 			Image image2 = new ImageIcon(path).getImage();
-			ResizeImage resizeImage = new ResizeImage(480,640);
-			Image scaledImage = resizeImage.resize(path);
-			ImageIcon icon = new ImageIcon(scaledImage);
+			ResizeImage resizeImage = new ResizeImage(480,640);*/
+			Image image = selectedImage.getImage();
+			ImageIcon icon = new ImageIcon(image);
 			imgLabel.setIcon(icon);
 						
 		}
@@ -498,6 +503,7 @@ public class MainFrame extends javax.swing.JFrame {
 			if(audioPlayerThread == null)
 			{
 				audioDecoder.startingPoint = (int)(sliderPosition*tickWeight);
+				audioDecoder.slider = slider;
 				audioPlayerThread = new Thread(audioDecoder);
 				audioPlayerThread.start();
 				btnPlay.setText("Pause");
@@ -506,7 +512,7 @@ public class MainFrame extends javax.swing.JFrame {
 			{
 				audioPlayerThread.stop();
 				audioDecoder.startingPoint =(int)(sliderPosition*tickWeight);
-				audioDecoder.slider.setValue((int)(sliderPosition*tickWeight));
+				slider.setValue((int)(sliderPosition*tickWeight));
 				audioPlayerThread = new Thread(audioDecoder);
 				audioPlayerThread.start();
 				btnPlay.setText("Pause");
@@ -532,14 +538,7 @@ public class MainFrame extends javax.swing.JFrame {
 	
 	private void btnPlayActionPerformed(ActionEvent evt){
 		System.out.println("btnPlay.actionPerformed, event="+evt);
-		/*{
-		    ++sliderPosition;
-		    System.out.println(sliderPosition);
-			slider.setValue(sliderPosition);
-			slider.firePropertyChange(getName(), 0, 1);
-			
-		}*/
-		if(audioDuration!=0)
+			if(audioDuration!=0)
 		{
 			audioDecoder.startingPoint = (int)(slider.getValue()*tickWeight);
 			audioDecoder.slider = this.slider;
@@ -593,11 +592,9 @@ public class MainFrame extends javax.swing.JFrame {
 		selectedImage =(ImageData) tblImage.getModel().getValueAt(0,selecteColumn);
 		if(! selectedImage.equals(null))
 		{
-			path =selectedImage.getPath();
-			Image image2 = new ImageIcon(path).getImage();
-			ResizeImage resizeImage = new ResizeImage(480,640);
-			Image scaledImage = resizeImage.resize(path);
-			ImageIcon icon = new ImageIcon(scaledImage);
+	
+			Image image = selectedImage.getImage();
+			ImageIcon icon = new ImageIcon(image);
 			imgLabel.setIcon(icon);
 			Number startValue = selectedImage.getStartTime();
 			Number endValue = selectedImage.getEndTime();
@@ -629,11 +626,7 @@ public class MainFrame extends javax.swing.JFrame {
 			image1.setEndTime(image1.getEndTime()- timeDifference );
 			System.out.println(timeDifference);
 			System.out.println("old Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
-			//tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setWidth((int) (spacing*(image1.getEndTime()-image1.getStartTime())));
 			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int) (spacing*(image1.getEndTime()-image1.getStartTime())));
-			//TableCellRenderer mycellrenderer = new MyTableCellRenderer();
-			//tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setCellRenderer(mycellrenderer);
-						
 			tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
 	
 			image2.setStartTime(startTime);
@@ -664,6 +657,19 @@ public class MainFrame extends javax.swing.JFrame {
 		{
 			Number stop = 0 ;
 			spinnerStartTime.setValue(0);
+		}
+		else
+		{
+			if(imageArray.size()==0)
+			{
+				spinnerStartTime.setValue(0);
+			}
+			else if(imageArray.size()>0)
+			{
+				ImageData lastImage= (ImageData) tblImage.getValueAt(0,imageArray.size()-1);
+				Number lastValue = (Number)lastImage.getEndTime();
+				spinnerStartTime.setValue(lastValue);
+			}
 		}
 	}
 	
@@ -748,6 +754,35 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 	
-
+	private void sliderMousePressed(MouseEvent evt) {
+		System.out.println("slider.mousePressed, event="+evt);
+		if(audioPlayerThread != null)
+		{
+			audioPlayerThread.stop();
+		}
+	}
+	
+	private void sliderStateChanged(ChangeEvent evt) {
+		System.out.println("slider.stateChanged, event="+evt);
+		sliderPosition = slider.getValue();
+		//slider.setToolTipText("The value is "+ sliderPosition);
+		if(imageArray != null)
+		{
+			
+			ImageData currentImage =  findImage(sliderPosition);
+			if(currentImage != null)
+			{	
+				if(selectedImage != null && (selectedImage.getIndex()!= currentImage.getIndex()))
+				{
+					
+					Image image = currentImage.getImage();
+					ImageIcon icon = new ImageIcon(image);
+					imgLabel.setIcon(icon);
+					selectedImage = currentImage;
+				}
+			}
+		}
+		
+	}
 
 }
