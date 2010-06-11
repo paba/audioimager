@@ -110,7 +110,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private int sliderPosition ;
 	private int cellWidth;
 	private int tableWidth;
-	private double spacing;
+	private float spacing;
 	private TableModel tblImageModel;
 	private ImageData selectedImage;
 	float tickWeight;
@@ -144,7 +144,7 @@ public class MainFrame extends javax.swing.JFrame {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			getContentPane().setLayout(thisLayout);
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			{
 				jLabel5 = new JLabel();
 				getContentPane().add(jLabel5, new AnchorConstraint(878, 82, 900, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
@@ -207,6 +207,11 @@ public class MainFrame extends javax.swing.JFrame {
 				getContentPane().add(btnStop, new AnchorConstraint(580, 173, 616, 120, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnStop.setText("Stop");
 				btnStop.setPreferredSize(new java.awt.Dimension(42, 22));
+				btnStop.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnStopActionPerformed(evt);
+					}
+				});
 			}
 			{
 				btnPlay = new JButton();
@@ -294,11 +299,13 @@ public class MainFrame extends javax.swing.JFrame {
 					jScrollPane2 = new JScrollPane();
 					jPanel1.add(jScrollPane2);
 					jScrollPane2.setPreferredSize(new java.awt.Dimension(1136, 101));
+					jScrollPane2.remove(jScrollPane2.getVerticalScrollBar());
 					jScrollPane2.getHorizontalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 						public void adjustmentValueChanged(AdjustmentEvent evt) {
 							horizontalScrollBarAdjustmentValueChanged(evt);
 						}
 					});
+					
 				
 					
 					{
@@ -326,13 +333,19 @@ public class MainFrame extends javax.swing.JFrame {
 									tblImage.setAutoscrolls(false);
 									tblImage.setCellSelectionEnabled(true);
 									tblImage.setColumnSelectionAllowed(true);
-									tblImage.setRowHeight(98);
+									tblImage.setRowHeight(92);
 									
 									
 									tblImage.setDragEnabled(true);
 									tblImage.setShowVerticalLines(true);
 									tblImage.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 									tblImage.setFillsViewportHeight(true);
+									//tblImage.setPreferredSize(new java.awt.Dimension(56, 98));
+									tblImage.addPropertyChangeListener(new PropertyChangeListener() {
+										public void propertyChange(PropertyChangeEvent evt) {
+											tblImagePropertyChange(evt);
+										}
+									});
 									//tblImage.setPreferredSize(new java.awt.Dimension(54, 54));
 									//tblImage.setPreferredSize(new java.awt.Dimension(91, 98));
 									tblImage.addMouseListener(new MouseAdapter() {
@@ -354,6 +367,10 @@ public class MainFrame extends javax.swing.JFrame {
 				imgLabel = new JLabel();
 				getContentPane().add(imgLabel, new AnchorConstraint(22, 975, 418, 576, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				imgLabel.setPreferredSize(new java.awt.Dimension(316, 240));
+				imgLabel.setBackground(new java.awt.Color(0,0,0));
+				imgLabel.setForeground(new java.awt.Color(128,0,255));
+				imgLabel.setOpaque(true);
+				imgLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			}
 			{
 				txtImageLink = new JTextField();
@@ -444,13 +461,23 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println(path);
 		if(imgLabel.getHeight()>0 && imgLabel.getWidth()>0 && !path.equals(""))
 		{
-		ResizeImage resizeImage = new ResizeImage(imgLabel.getHeight(),imgLabel.getWidth());
+		//ResizeImage resizeImage = new ResizeImage(imgLabel.getHeight(),imgLabel.getWidth());
+		ResizeImage resizeImage = new ResizeImage(240,320);
 		Image image = new ImageIcon(path).getImage();
 		Image scaledImage = resizeImage.resize(path);
 		selectedImage = new ImageData(-1,-1,-1,path,scaledImage);
 		ImageIcon icon = new ImageIcon(scaledImage);
 		imgLabel.setIcon(icon);
 		txtImageLink.setText("");
+		}
+		if(imageArray != null)
+		{
+			if(imageArray.size()>0)
+			{
+				ImageData lastImage= (ImageData) tblImage.getValueAt(0,imageArray.size()-1);
+				Number lastValue = (Number)(lastImage.getEndTime());
+				spinnerStartTime.setValue(lastValue);
+			}
 		}
 	}
 	
@@ -471,11 +498,11 @@ public class MainFrame extends javax.swing.JFrame {
 		else
 		{
 		
-		spacing = (double)slider.getWidth()/slider.getMaximum();	
+		spacing = (float)slider.getWidth()/slider.getMaximum();	
 		System.out.println("spacing " +spacing+ "slider width "+slider.getWidth() + " slider max "+ slider.getMaximum());
 		}	
-		cellWidth = (int) (spacing*(endTime - startTime));
-		tableWidth = (int) (spacing*endTime);
+		cellWidth = (int)( spacing*(endTime - startTime));
+		tableWidth = (int)(spacing*endTime);
 		System.out.println("tableWidth "+tableWidth +"cell Width"+ cellWidth);
 		if(imageArray.size()== 1)
 		{
@@ -490,8 +517,10 @@ public class MainFrame extends javax.swing.JFrame {
 		//tblImage.getColumnModel().addColumn(new TableColumn(0,5));	
 		//cellWidth = cellWidth +17;
 		//tableWidth = tableWidth +17;
+		//--------------------
 		cellWidth = cellWidth +17;
 		tableWidth = tableWidth + 17;
+				
 		}
 		//else
 		{
@@ -654,7 +683,7 @@ public class MainFrame extends javax.swing.JFrame {
 		
 		
 		
-		if(selectedImage.getIndex()>0)
+		if(selectedImage.getIndex()>1)
 		{
 			ImageData image1= (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()-1);
 			ImageData image2 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex());
@@ -666,32 +695,68 @@ public class MainFrame extends javax.swing.JFrame {
 			image1.setEndTime(image1.getEndTime()- timeDifference );
 			System.out.println(timeDifference);
 			System.out.println("old Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
-			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int) (spacing*(image1.getEndTime()-image1.getStartTime())));
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int)(spacing*(image1.getEndTime()-image1.getStartTime())));
 			tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
 	
 			image2.setStartTime(startTime);
 			tblImage.setValueAt(image2,0,selectedImage.getIndex());
 			tblImage.doLayout();
-			tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime())));
 			System.out.println("New Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
 			
 			}
-			else
+			else if(startTime > selectedImage.getStartTime())
 			{
 				int timeDifference = startTime - selectedImage.getStartTime();
 				image1.setEndTime(image1.getEndTime()+timeDifference);
-				tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int) (spacing*(image1.getEndTime()-image1.getStartTime())));
+				tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int)(spacing*(image1.getEndTime()-image1.getStartTime())));
 				tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
 				
 				image2.setStartTime(startTime);
 				tblImage.setValueAt(image2,0,selectedImage.getIndex());
 				tblImage.doLayout();
-				tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+				tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)( spacing*(image2.getEndTime()-image2.getStartTime())));
 				System.out.println("New Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
 			}
 			
 			
 				
+		}
+		else if(selectedImage.getIndex()==1)
+		{
+			ImageData image1= (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()-1);
+			ImageData image2 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex());
+			
+			if(startTime < selectedImage.getStartTime())
+			{	
+			
+			int timeDifference = selectedImage.getStartTime()-startTime;
+			image1.setEndTime(image1.getEndTime()- timeDifference);
+			System.out.println(timeDifference);
+			System.out.println("old Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int)(spacing*(image1.getEndTime()-image1.getStartTime()))+17);
+			tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
+	
+			image2.setStartTime(startTime);
+			tblImage.setValueAt(image2,0,selectedImage.getIndex());
+			tblImage.doLayout();
+			tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime())));
+			System.out.println("New Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
+			
+			}
+			else if(startTime > selectedImage.getStartTime())
+			{
+				int timeDifference = startTime - selectedImage.getStartTime();
+				image1.setEndTime(image1.getEndTime()+timeDifference);
+				tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).setPreferredWidth((int)(spacing*(image1.getEndTime()-image1.getStartTime()))+17);
+				tblImage.setValueAt(image1,0,selectedImage.getIndex()-1 );
+				
+				image2.setStartTime(startTime);
+				tblImage.setValueAt(image2,0,selectedImage.getIndex());
+				tblImage.doLayout();
+				tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)( spacing*(image2.getEndTime()-image2.getStartTime())));
+				System.out.println("New Width" + tblImage.getColumnModel().getColumn(selectedImage.getIndex()-1).getWidth());
+			}
 		}
 		else if(selectedImage.getIndex()==0)
 		{
@@ -707,7 +772,7 @@ public class MainFrame extends javax.swing.JFrame {
 			else if(imageArray.size()>0)
 			{
 				ImageData lastImage= (ImageData) tblImage.getValueAt(0,imageArray.size()-1);
-				Number lastValue = (Number)lastImage.getEndTime();
+				Number lastValue = (Number)(lastImage.getEndTime());
 				spinnerStartTime.setValue(lastValue);
 			}
 		}
@@ -717,11 +782,65 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println("spinnerEndTime.stateChanged, event="+evt);
 		Number endValue = (Number) spinnerEndTime.getValue();
 		int endTime = endValue.intValue();
-		if(selectedImage.getIndex()>=0)
+		if(selectedImage.getIndex()>0)
 		{
 			
 			ImageData image2 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex());
 		
+			if(endTime < selectedImage.getEndTime())
+			{
+				if((selectedImage.getIndex()+1) < imageArray.size() )
+				{
+					ImageData image3 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()+1);
+					int timeDifference = selectedImage.getEndTime()-endTime;
+					image3.setStartTime(image3.getStartTime() - timeDifference);
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()+1).setPreferredWidth((int)(spacing*(image3.getEndTime()-image3.getStartTime())));
+					tblImage.setValueAt(image3,0,selectedImage.getIndex()+1 );
+					
+					image2.setEndTime(endTime);
+					tblImage.setValueAt(image2,0,selectedImage.getIndex());
+					tblImage.doLayout();
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime())));
+				}
+				else 
+				{
+					image2.setEndTime(endTime);
+					tblImage.setValueAt(image2,0,selectedImage.getIndex());
+					tblImage.doLayout();
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime())));
+				}
+				
+			}
+			else if(endTime > selectedImage.getEndTime())
+			{
+				if((selectedImage.getIndex()+1) < imageArray.size() )
+				{
+					ImageData image3 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()+1);
+					int timeDifference = endTime - selectedImage.getEndTime();
+					image3.setStartTime(image3.getStartTime() + timeDifference);
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()+1).setPreferredWidth((int)(spacing*(image3.getEndTime()-image3.getStartTime())));
+					tblImage.setValueAt(image3,0,selectedImage.getIndex()+1 );
+					
+					image2.setEndTime(endTime);
+					tblImage.setValueAt(image2,0,selectedImage.getIndex());
+					tblImage.doLayout();
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime())));
+				}
+				else
+				{
+					image2.setEndTime(endTime);
+					tblImage.setValueAt(image2,0,selectedImage.getIndex());
+					tblImage.doLayout();
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+				}
+				
+			}	
+		
+		}
+		else if(selectedImage.getIndex()==0)
+		{
+			ImageData image2 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex());
+			
 			if(endTime < selectedImage.getEndTime())
 			{
 				if((selectedImage.getIndex()+1) < imageArray.size() )
@@ -735,42 +854,41 @@ public class MainFrame extends javax.swing.JFrame {
 					image2.setEndTime(endTime);
 					tblImage.setValueAt(image2,0,selectedImage.getIndex());
 					tblImage.doLayout();
-					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime()))+17);
 				}
 				else
 				{
 					image2.setEndTime(endTime);
 					tblImage.setValueAt(image2,0,selectedImage.getIndex());
 					tblImage.doLayout();
-					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime()))+17);
 				}
 				
 			}
-			else
+			else if(endTime > selectedImage.getEndTime())
 			{
 				if((selectedImage.getIndex()+1) < imageArray.size() )
 				{
 					ImageData image3 = (ImageData) tblImage.getValueAt(0,selectedImage.getIndex()+1);
 					int timeDifference = endTime - selectedImage.getEndTime();
 					image3.setStartTime(image3.getStartTime() + timeDifference);
-					tblImage.getColumnModel().getColumn(selectedImage.getIndex()+1).setPreferredWidth((int) (spacing*(image3.getEndTime()-image3.getStartTime())));
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()+1).setPreferredWidth((int)( spacing*(image3.getEndTime()-image3.getStartTime())));
 					tblImage.setValueAt(image3,0,selectedImage.getIndex()+1 );
 					
 					image2.setEndTime(endTime);
 					tblImage.setValueAt(image2,0,selectedImage.getIndex());
 					tblImage.doLayout();
-					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)( spacing*(image2.getEndTime()-image2.getStartTime()))+17);
 				}
 				else
 				{
 					image2.setEndTime(endTime);
 					tblImage.setValueAt(image2,0,selectedImage.getIndex());
 					tblImage.doLayout();
-					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int) (spacing*(image2.getEndTime()-image2.getStartTime())));
+					tblImage.getColumnModel().getColumn(selectedImage.getIndex()).setPreferredWidth((int)(spacing*(image2.getEndTime()-image2.getStartTime()))+17);
 				}
 				
-			}	
-		
+			}		
 		}
 		
 	}
@@ -827,7 +945,23 @@ public class MainFrame extends javax.swing.JFrame {
 				}
 			}
 		}
-		
+		//jScrollPane2.getHorizontalScrollBar().setValue(slider.getValue());
+	}
+	
+	private void tblImagePropertyChange(PropertyChangeEvent evt) {
+		System.out.println("tblImage.propertyChange, event="+evt);
+		//TODO add your code for tblImage.propertyChange
+	}
+	
+	private void btnStopActionPerformed(ActionEvent evt) {
+		System.out.println("btnStop.actionPerformed, event="+evt);
+		if(audioPlayerThread != null)
+		{
+			audioPlayerThread.stop();
+			btnPlay.setText("Play");
+			
+		}
+		slider.setValue(0);
 	}
 
 }
