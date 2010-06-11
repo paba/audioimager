@@ -36,7 +36,7 @@ public class DecodeAndPlayAudio implements Runnable{
 	  int songLength;
 	  int duration;
 	  public JSlider slider;
-	  float tickSpacing;
+	  public float tickSpacing;
 	  public AudioData getAudioData(String audioPath)
 	  {
 		
@@ -76,7 +76,7 @@ public class DecodeAndPlayAudio implements Runnable{
 		    songLength = 0;
 		    duration = (int) (container.getDuration()/1000000);
 		    data.setSongDuration(duration);
-		   
+				   
 		    while(container.readNextPacket(packet) >= 0)
 		    {
 		      
@@ -108,7 +108,7 @@ public class DecodeAndPlayAudio implements Runnable{
 		    }  
 		    
 		    data.setSongLenth(songLength);
-		    tickSpacing = songLength/duration;
+		    tickSpacing = (float)songLength/duration;
 		    return data;
 	  }
 	  
@@ -216,6 +216,7 @@ public class DecodeAndPlayAudio implements Runnable{
 	          {
 	            playJavaSound(samples);
 	          }
+	          System.out.println("Song Length " +songLen + " tickSpacing" + tickSpacing+ " slider value " +((int) (songLen/tickSpacing)) );
 	          slider.setValue((int) (songLen/tickSpacing));
 	         
 	          //slider.firePropertyChange("Value",false,true);
