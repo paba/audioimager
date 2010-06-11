@@ -17,13 +17,13 @@ import sun.reflect.generics.visitor.Reifier;
 
 public class ResizeImage {
 	
-	private int newHeight;
-	private int newWidth;
+	private int newHeight,reqHeight;
+	private int newWidth, reqWidth;
 	
 	ResizeImage(int height, int width)
 	{
-		this.newHeight = height;
-		this.newWidth = width;
+		this.reqHeight = height;
+		this.reqWidth = width;
 	}
 	
 	public Image resize(String path)
@@ -49,10 +49,12 @@ public class ResizeImage {
 		// TODO
 		if ((iWidth/4)>(iHeight/3)){
 			System.out.println("IFFFF");
-			newWidth = 640;
+			//newWidth = 640;
+			newWidth = reqWidth;
 		}
 		else{
-			newWidth = (iWidth*480)/iHeight;
+			//newWidth = (iWidth*480)/iHeight;
+			newWidth = (iWidth*reqHeight)/iHeight;
 			
 		}
 		
@@ -70,8 +72,8 @@ public class ResizeImage {
 		int width = layer.getWidth();
 		int height = layer.getHeight();
 		int lPixel,red,green,blue = 0;
-		int dispWidth = (640-width)/2; 
-		int dispHeight = (480-height)/2;	
+		int dispWidth = (reqWidth-width)/2; 
+		int dispHeight =(reqHeight-height)/2;	
 		System.out.println("Width="+width+"Height="+height);
 		
 		for(int w=0;w<width;w++)
