@@ -70,6 +70,16 @@ import javax.swing.SwingUtilities;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class MainFrame extends javax.swing.JFrame {
+
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private JLabel jLabel1;
 	private JTextField txtImageLink;
 	private JLabel imgLabel;
@@ -81,6 +91,8 @@ public class MainFrame extends javax.swing.JFrame {
 	private JButton btnStop;
 	private JButton btnPlay;
 	private JButton btnAdd;
+	private JLabel jLabel5;
+	private JLabel jLabel4;
 	private JSpinner spinnerEndTime;
 	private JSpinner spinnerStartTime;
 	private JScrollPane scrollSlider;
@@ -134,6 +146,18 @@ public class MainFrame extends javax.swing.JFrame {
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
+				jLabel5 = new JLabel();
+				getContentPane().add(jLabel5, new AnchorConstraint(878, 82, 900, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jLabel5.setText("Images");
+				jLabel5.setPreferredSize(new java.awt.Dimension(54, 13));
+			}
+			{
+				jLabel4 = new JLabel();
+				getContentPane().add(jLabel4, new AnchorConstraint(692, 75, 715, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jLabel4.setText("Audio");
+				jLabel4.setPreferredSize(new java.awt.Dimension(48, 14));
+			}
+			{
 				/*SpinnerListModel spinnerStartTimeModel = 
 					new SpinnerListModel(
 							new String[] { "Sun", "Mon" , "Tue" , "Wed" , "Thu" , "Fri" , "Sat" });*/
@@ -142,9 +166,9 @@ public class MainFrame extends javax.swing.JFrame {
 				
 				SpinnerNumberModel spinnerStartTimeModel = new SpinnerNumberModel(value,0,null,stetpsize); 
 				spinnerStartTime = new JSpinner();
-				getContentPane().add(spinnerStartTime, new AnchorConstraint(376, 714, 405, 651, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerStartTime, new AnchorConstraint(438, 756, 474, 649, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerStartTime.setModel(spinnerStartTimeModel);
-				spinnerStartTime.setPreferredSize(new java.awt.Dimension(80, 29));
+				spinnerStartTime.setPreferredSize(new java.awt.Dimension(85, 22));
 				spinnerStartTime.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent evt) {
 						spinnerStartTimeStateChanged(evt);
@@ -153,9 +177,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnAudioBrowse = new JButton();
-				getContentPane().add(btnAudioBrowse, new AnchorConstraint(77, 571, 107, 483, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnAudioBrowse, new AnchorConstraint(20, 562, 56, 455, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnAudioBrowse.setText("Browse");
-				btnAudioBrowse.setPreferredSize(new java.awt.Dimension(112, 30));
+				btnAudioBrowse.setPreferredSize(new java.awt.Dimension(85, 22));
 				btnAudioBrowse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAudioBrowseActionPerformed(evt);
@@ -164,8 +188,8 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				txtAudio = new JTextField();
-				getContentPane().add(txtAudio, new AnchorConstraint(77, 465, 108, 126, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtAudio.setPreferredSize(new java.awt.Dimension(431, 31));
+				getContentPane().add(txtAudio, new AnchorConstraint(20, 427, 55, 123, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				txtAudio.setPreferredSize(new java.awt.Dimension(241, 21));
 				txtAudio.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						txtAudioPropertyChange(evt);
@@ -174,21 +198,21 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				lblAudio = new JLabel();
-				getContentPane().add(lblAudio, new AnchorConstraint(71, 126, 104, 58, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(lblAudio, new AnchorConstraint(27, 100, 47, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				lblAudio.setText("Add Audio");
-				lblAudio.setPreferredSize(new java.awt.Dimension(86, 33));
+				lblAudio.setPreferredSize(new java.awt.Dimension(68, 12));
 			}
 			{
 				btnStop = new JButton();
-				getContentPane().add(btnStop, new AnchorConstraint(941, 60, 963, 9, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnStop, new AnchorConstraint(580, 173, 616, 120, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnStop.setText("Stop");
-				btnStop.setPreferredSize(new java.awt.Dimension(65, 21));
+				btnStop.setPreferredSize(new java.awt.Dimension(42, 22));
 			}
 			{
 				btnPlay = new JButton();
-				getContentPane().add(btnPlay, new AnchorConstraint(694, 84, 766, 11, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnPlay, new AnchorConstraint(580, 116, 616, 9, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnPlay.setText("Play");
-				btnPlay.setPreferredSize(new java.awt.Dimension(74, 39));
+				btnPlay.setPreferredSize(new java.awt.Dimension(85, 22));
 				btnPlay.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnPlayActionPerformed(evt);
@@ -197,21 +221,21 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				jLabel3 = new JLabel();
-				getContentPane().add(jLabel3, new AnchorConstraint(425, 648, 444, 592, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel3, new AnchorConstraint(504, 633, 522, 576, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel3.setText("End Time");
-				jLabel3.setPreferredSize(new java.awt.Dimension(71, 19));
+				jLabel3.setPreferredSize(new java.awt.Dimension(45, 11));
 			}
 			{
 				jLabel2 = new JLabel();
-				getContentPane().add(jLabel2, new AnchorConstraint(379, 671, 402, 596, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel2, new AnchorConstraint(443, 649, 466, 577, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel2.setText("Start Time");
-				jLabel2.setPreferredSize(new java.awt.Dimension(96, 23));
+				jLabel2.setPreferredSize(new java.awt.Dimension(57, 14));
 			}
 			{
 				btnAdd = new JButton();
-				getContentPane().add(btnAdd, new AnchorConstraint(282, 689, 318, 596, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnAdd, new AnchorConstraint(495, 975, 532, 869, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnAdd.setText("Add Image");
-				btnAdd.setPreferredSize(new java.awt.Dimension(119, 36));
+				btnAdd.setPreferredSize(new java.awt.Dimension(84, 22));
 				btnAdd.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAddActionPerformed(evt);
@@ -220,13 +244,13 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				jPanel1 = new JPanel();
-				getContentPane().add(jPanel1, new AnchorConstraint(782, 961, 991, 68, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jPanel1, new AnchorConstraint(639, 981, 991, 90, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
 				GridLayout jPanel1Layout = new GridLayout(2, 1);
 				jPanel1Layout.setColumns(1);
 				jPanel1Layout.setHgap(5);
 				jPanel1Layout.setVgap(5);
 				jPanel1.setLayout(jPanel1Layout);
-				jPanel1.setPreferredSize(new java.awt.Dimension(1136, 207));
+				jPanel1.setPreferredSize(new java.awt.Dimension(706, 206));
 				{
 					scrollSlider = new JScrollPane();
 					//scrollSlider.getHorizontalScrollBar().setVisible(false);
@@ -328,14 +352,14 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				imgLabel = new JLabel();
-				getContentPane().add(imgLabel, new AnchorConstraint(282, 552, 767, 49, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				imgLabel.setPreferredSize(new java.awt.Dimension(640, 480));
+				getContentPane().add(imgLabel, new AnchorConstraint(22, 975, 418, 576, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				imgLabel.setPreferredSize(new java.awt.Dimension(316, 240));
 			}
 			{
 				txtImageLink = new JTextField();
-				getContentPane().add(txtImageLink, new AnchorConstraint(135, 465, 160, 127, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(txtImageLink, new AnchorConstraint(80, 427, 116, 123, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				txtImageLink.setText("");
-				txtImageLink.setPreferredSize(new java.awt.Dimension(429, 24));
+				txtImageLink.setPreferredSize(new java.awt.Dimension(241, 22));
 				txtImageLink.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						txtImageLinkPropertyChange(evt);
@@ -345,9 +369,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnBrowse = new JButton();
-				getContentPane().add(btnBrowse, new AnchorConstraint(134, 572, 178, 483, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnBrowse, new AnchorConstraint(80, 562, 116, 455, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnBrowse.setText("Browse");
-				btnBrowse.setPreferredSize(new java.awt.Dimension(113, 43));
+				btnBrowse.setPreferredSize(new java.awt.Dimension(85, 22));
 				btnBrowse.setMinimumSize(new java.awt.Dimension(75, 56));
 				btnBrowse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -358,9 +382,9 @@ public class MainFrame extends javax.swing.JFrame {
 			
 			{
 				jLabel1 = new JLabel();
-				getContentPane().add(jLabel1, new AnchorConstraint(128, 127, 182, 61, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel1, new AnchorConstraint(86, 107, 108, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel1.setText("Add Images");
-				jLabel1.setPreferredSize(new java.awt.Dimension(84, 53));
+				jLabel1.setPreferredSize(new java.awt.Dimension(74, 13));
 			}
 			{
 				Number value = 0;
@@ -369,10 +393,10 @@ public class MainFrame extends javax.swing.JFrame {
 				SpinnerNumberModel spinnerEndTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
 				
 				spinnerEndTime = new JSpinner();
-				getContentPane().add(spinnerEndTime, new AnchorConstraint(421, 718, 449, 654, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerEndTime, new AnchorConstraint(495, 754, 532, 648, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerEndTime.setModel(spinnerEndTimeModel);
 				spinnerEndTime.setValue(value);
-				spinnerEndTime.setPreferredSize(new java.awt.Dimension(65, 15));
+				spinnerEndTime.setPreferredSize(new java.awt.Dimension(84, 22));
 				spinnerEndTime.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent evt) {
 						spinnerEndTimeStateChanged(evt);
@@ -380,10 +404,11 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			pack();
+			this.setSize(800, 640);
 			Toolkit toolkit = java.awt.Toolkit.getDefaultToolkit();
 			Dimension screenDimension = toolkit.getScreenSize(); 
 			
-			this.setSize((int) screenDimension.getWidth(), (int) screenDimension.getHeight());
+			//this.setSize((int) screenDimension.getWidth(), (int) screenDimension.getHeight());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -399,7 +424,7 @@ public class MainFrame extends javax.swing.JFrame {
 		cellWidth = 0 ;
 		tableWidth = 0 ;
 		spacing = 0 ;
-		tickWeight = 0 ;
+		tickWeight = (float) 0.0 ;
 		audioDuration = 0 ;
 		noOfAudioSamples = 0 ;
 		audioDecoder= null;
@@ -480,6 +505,20 @@ public class MainFrame extends javax.swing.JFrame {
 			 tblImage.getColumnModel().getColumn(imageArray.size()-1).setResizable(true);
 		}
 		
+		if(selectedImage.getIndex()<0)
+		{
+			if(imageArray.size()==0)
+			{
+				spinnerStartTime.setValue(0);
+			}
+			else if(imageArray.size()>0)
+			{
+				ImageData lastImage= (ImageData) tblImage.getValueAt(0,imageArray.size()-1);
+				Number lastValue = (Number)lastImage.getEndTime();
+				spinnerStartTime.setValue(lastValue);
+			}
+		}
+		
 		
 	}
 	
@@ -490,9 +529,6 @@ public class MainFrame extends javax.swing.JFrame {
 		selectedImage = findImage(sliderPosition);
 		if(selectedImage != null)
 		{
-			/*path =selectedImage.getPath();
-			Image image2 = new ImageIcon(path).getImage();
-			ResizeImage resizeImage = new ResizeImage(480,640);*/
 			Image image = selectedImage.getImage();
 			ImageIcon icon = new ImageIcon(image);
 			imgLabel.setIcon(icon);
@@ -511,7 +547,9 @@ public class MainFrame extends javax.swing.JFrame {
 			else
 			{
 				audioPlayerThread.stop();
-				audioDecoder.startingPoint =(int)(sliderPosition*tickWeight);
+				System.out.println("TickWeight"+ tickWeight + " sliderPosition "+ sliderPosition+ "final value "+ (int) (sliderPosition*tickWeight) );
+				audioDecoder.startingPoint =(int) (sliderPosition*tickWeight);
+				audioDecoder.slider = slider;
 				slider.setValue((int)(sliderPosition*tickWeight));
 				audioPlayerThread = new Thread(audioDecoder);
 				audioPlayerThread.start();
@@ -559,6 +597,7 @@ public class MainFrame extends javax.swing.JFrame {
 			 else 
 			 {
 				 audioDecoder.startingPoint = (int)(slider.getValue()*tickWeight);
+				 audioDecoder.slider = slider;
 				 audioPlayerThread = new Thread(audioDecoder);
 				 audioPlayerThread.start();
 				 btnPlay.setText("Pause");
@@ -599,6 +638,7 @@ public class MainFrame extends javax.swing.JFrame {
 			Number startValue = selectedImage.getStartTime();
 			Number endValue = selectedImage.getEndTime();
 			spinnerStartTime.setValue(startValue);
+			spinnerStartTime.getEditor().setPreferredSize(new java.awt.Dimension(57, 24));
 			spinnerEndTime.setValue(endValue);
 			
 						
@@ -745,13 +785,16 @@ public class MainFrame extends javax.swing.JFrame {
 			AudioData audioData = audioDecoder.getAudioData(audioPath);
 			audioDuration = audioData.getSongDuration();
 			noOfAudioSamples = audioData.getSongLength();
-			tickWeight = (float)(noOfAudioSamples/audioDuration);
 			if(slider.getMaximum()< audioDuration)
 			{
-				slider.setMaximum(audioData.getSongDuration());
+				slider.setMaximum(audioDuration);
 			}
+			tickWeight = (float)noOfAudioSamples/audioDuration;
+			System.out.println(tickWeight);
+			audioDecoder.slider = slider;
 			
 		}
+		
 	}
 	
 	private void sliderMousePressed(MouseEvent evt) {
@@ -766,6 +809,8 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println("slider.stateChanged, event="+evt);
 		sliderPosition = slider.getValue();
 		//slider.setToolTipText("The value is "+ sliderPosition);
+		//scrollSlider.getHorizontalScrollBar().setValue(sliderPosition);
+		System.out.println("Maximum horizontal scroll bar slider "+scrollSlider.getHorizontalScrollBar().getMaximum());
 		if(imageArray != null)
 		{
 			
