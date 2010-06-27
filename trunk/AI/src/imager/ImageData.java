@@ -53,4 +53,8 @@ public class ImageData {
 		this.image = picture;
 	}
 
+	public void setIndex(int Id)
+	{
+		this.index = Id ;
+	}
 }

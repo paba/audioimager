@@ -8,14 +8,20 @@ import javax.swing.table.AbstractTableModel;
 
 public class ImageTableModel extends AbstractTableModel {
 	
-		    private ArrayList<ImageData> imageList ;
+		    public ArrayList<ImageData> imageList ;
+		
 		    
 		    public ImageTableModel()
 		    {
 		    	imageList = new ArrayList<ImageData>() ;
+		    	
 		    }
 		    
-		   
+		   public void removeValueAt(int col)
+		   {
+			   imageList.remove(col);
+			  
+		   }
 		   
 		    public int getColumnCount() {
 		    	if(imageList == null)
@@ -24,7 +30,9 @@ public class ImageTableModel extends AbstractTableModel {
 		    	}
 		    	else
 		    	{	
+		    		
 		    		return imageList.size();
+		    		
 		    	}
 		    }
 
@@ -69,9 +77,10 @@ public class ImageTableModel extends AbstractTableModel {
 		    	{
 		    		imageList.add((ImageData) value);
 		    	}
-		    	else
+		    	else 
 		    	{
 		    		imageList.set(col,(ImageData) value);
+		    			    		
 		    	}	
 		     
 		    }
