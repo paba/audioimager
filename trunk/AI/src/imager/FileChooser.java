@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
@@ -40,10 +41,20 @@ public class FileChooser extends javax.swing.JFrame{
 		});
 	}*/
     private JTextField imageTxt;
+     private String path;
+    private JMenuItem menuItem;
 	public FileChooser(JTextField txt) {
 		super();
 		imageTxt = txt;
 		initGUI();
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);	
+	}
+	
+	public FileChooser(JMenuItem item) {
+		super();
+		menuItem = item;
+		initTxtGUI();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);	
 	}
@@ -64,6 +75,47 @@ public class FileChooser extends javax.swing.JFrame{
 		this.setVisible(true);	
 	}
 	*/
+	private void initTxtGUI() {
+		try {
+			AnchorLayout thisLayout = new AnchorLayout();
+			
+			getContentPane().setLayout(thisLayout);
+			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			{
+				filechooser = new JFileChooser();
+				getContentPane().add(filechooser, new AnchorConstraint(1, 991, 976, 3, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				filechooser.setPreferredSize(new java.awt.Dimension(494, 308));
+				filechooser.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						try {
+							filechooserTxtActionPerformed(evt);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			pack();
+			this.setSize(508, 350);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private void filechooserTxtActionPerformed(ActionEvent evt) throws IOException {
+		System.out.println("filechooser.actionPerformed, event="+evt);
+		if(evt.getActionCommand().toString().equals(filechooser.APPROVE_SELECTION))
+		{
+			path = filechooser.getSelectedFile().getCanonicalPath();
+			this.dispose();
+			menuItem.firePropertyChange(path, false, true);
+		}
+		else if(evt.getActionCommand().toString().equals(filechooser.CANCEL_SELECTION))
+		{
+			this.dispose();
+		}	
+		
+	}
 	
 	private void initGUI() {
 		try {
