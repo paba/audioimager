@@ -41,10 +41,10 @@ import com.xuggle.xuggler.video.IConverter;
 
 
 
-public class ImagesToVideo {
+public class ImagesToVideo{
 
 
-        public static final String OUTPUT_FILE_FLV = "video.avi";
+        private String OUTPUT_FILE_FLV ;
 
         private IContainer outContainer;
         private IStream outStream;
@@ -56,9 +56,11 @@ public class ImagesToVideo {
         private Rectangle screenBounds;
         
         
-        public void createVideo(ArrayList<ImageData> images) {
+        public void createVideo(ArrayList<ImageData> images, String outputFile) {
                 
-        ImagesToVideo videoEncoder = new ImagesToVideo();
+        ImagesToVideo videoEncoder = new ImagesToVideo(outputFile);
+        this.OUTPUT_FILE_FLV = outputFile;
+        System.out.println("output file"+ OUTPUT_FILE_FLV);
         /*int length = args.length;
         if(length==0)
         {
@@ -100,7 +102,9 @@ public class ImagesToVideo {
         System.out.println("outputFile.flv is ready");
         }
 
-        public ImagesToVideo(){
+        public ImagesToVideo(String outputFile){
+        
+        	OUTPUT_FILE_FLV = outputFile;
         
         	try{
         robot = new Robot();

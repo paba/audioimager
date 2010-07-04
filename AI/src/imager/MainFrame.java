@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.VetoableChangeListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,11 +52,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerListModel;
@@ -103,9 +109,7 @@ public class MainFrame extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
-	 
 
-	private JLabel jLabel1;
 	private JTextField txtImageLink;
 	private JLabel imgLabel;
 	private JButton btnBrowse;
@@ -122,9 +126,24 @@ public class MainFrame extends javax.swing.JFrame {
 	private JScrollPane scrollCaption;
 	private JButton btnCaption;
 	private JTextField txtCaption;
+	private JButton btnFlickrSearch;
+	private JTextField txtFlickr;
+	private JScrollPane flickrScroll;
+	private JTabbedPane jTabbedPane1;
+	private JButton btnZoomOut;
+	private JButton btnZoomIn;
+	private JMenuItem movItem;
+	private JMenuItem aviItem;
+	private JMenu expVideoMenu;
+	private JSeparator jSeparator1;
+	private JMenuItem newProjItem;
+	private JMenuItem saveProjMenu;
+	private JMenuItem projOpenMenu;
+	private JMenu helpMenu;
+	private JMenu jMenu1;
+	private JMenuBar jMenuBar;
 	private JButton btnPlus;
 	private JButton btnSplit;
-	private JButton btnCreate;
 	private JButton jButton1;
 	private JTextField txtCaptionEdit;
 	private JLabel jLabel8;
@@ -132,7 +151,6 @@ public class MainFrame extends javax.swing.JFrame {
 	private JSpinner spinnerCaptionStartTime;
 	private JLabel jLabel7;
 	private JLabel jLabel6;
-	private JLabel lblText;
 	private JLabel jLabel5;
 	private JLabel jLabel4;
 	private JSpinner spinnerEndTime;
@@ -140,7 +158,6 @@ public class MainFrame extends javax.swing.JFrame {
 	private JScrollPane scrollSlider;
 	private JButton btnAudioBrowse;
 	private JTextField txtAudio;
-	private JLabel lblAudio;
 	private JLabel jLabel3;
 	private JLabel jLabel2;
 
@@ -160,12 +177,17 @@ public class MainFrame extends javax.swing.JFrame {
 	int audioDuration;
 	int noOfAudioSamples;
 	boolean columnMoved;
+	//boolean captionPropertyChanged;
 	int columnMovedPosition;
 	int columnMovedFromPosition;
 	int selectedCaption;
 	int gapFiller;
+	int zoomingFactor;
+	int minimumZoomingFactor;
 	DecodeAndPlayAudio audioDecoder;
 	Thread audioPlayerThread;
+	int sliderWidth;
+	
 	
 
 	/**
@@ -194,16 +216,139 @@ public class MainFrame extends javax.swing.JFrame {
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			{
+				jTabbedPane1 = new JTabbedPane();
+				getContentPane().add(jTabbedPane1, new AnchorConstraint(17, 593, 537, 22, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jTabbedPane1.setPreferredSize(new java.awt.Dimension(505, 375));
+				JPanel flickrPannel = new JPanel();
+				AnchorLayout flickrPannelLayout = new AnchorLayout();
+				flickrPannel.setLayout(flickrPannelLayout);
+				jTabbedPane1.addTab("Images from Flickr", flickrPannel);
+				{
+					btnFlickrSearch = new JButton();
+					flickrPannel.add(btnFlickrSearch, new AnchorConstraint(27, 975, 93, 799, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					btnFlickrSearch.setText("Search");
+					btnFlickrSearch.setPreferredSize(new java.awt.Dimension(88, 23));
+				}
+				{
+					txtFlickr = new JTextField();
+					flickrPannel.add(txtFlickr, new AnchorConstraint(30, 789, 84, 349, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					txtFlickr.setPreferredSize(new java.awt.Dimension(220, 19));
+				}
+				{
+					flickrScroll = new JScrollPane();
+					flickrPannel.add(flickrScroll, new AnchorConstraint(116, 977, 967, 25, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					flickrScroll.setPreferredSize(new java.awt.Dimension(476, 297));
+				}
+				JPanel diskPannel = new JPanel();
+				jTabbedPane1.addTab("Add From Your Disk", diskPannel);
+
+			}
+			{
+				btnZoomOut = new JButton();
+				getContentPane().add(btnZoomOut, new AnchorConstraint(580, 71, 609, 41, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnZoomOut.setText("-");
+				btnZoomOut.setPreferredSize(new java.awt.Dimension(27, 21));
+				btnZoomOut.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnZoomOutActionPerformed(evt);
+					}
+				});
+			}
+			{
+				btnZoomIn = new JButton();
+				getContentPane().add(btnZoomIn, new AnchorConstraint(580, 36, 609, 8, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnZoomIn.setText("+");
+				btnZoomIn.setPreferredSize(new java.awt.Dimension(25, 21));
+				btnZoomIn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnZoomInActionPerformed(evt);
+					}
+				});
+			}
+			{
+				jMenuBar = new JMenuBar();
+				setJMenuBar(jMenuBar);
+				{
+					jMenu1 = new JMenu();
+					jMenuBar.add(jMenu1);
+					jMenu1.setText("File");
+					{
+						newProjItem = new JMenuItem();
+						jMenu1.add(newProjItem);
+						newProjItem.setText("New Project");
+					}
+					{
+						projOpenMenu = new JMenuItem();
+						jMenu1.add(projOpenMenu);
+						projOpenMenu.setText("Open Project");
+					}
+					{
+						saveProjMenu = new JMenuItem();
+						jMenu1.add(saveProjMenu);
+						saveProjMenu.setText("Save Project");
+					}
+					{
+						jSeparator1 = new JSeparator();
+						jMenu1.add(jSeparator1);
+					}
+					{
+						expVideoMenu = new JMenu();
+						jMenu1.add(expVideoMenu);
+						expVideoMenu.setText("Export Video");
+						{
+							movItem = new JMenuItem();
+							expVideoMenu.add(movItem);
+							movItem.setText("MOV");
+							movItem.addPropertyChangeListener(new PropertyChangeListener() {
+								public void propertyChange(PropertyChangeEvent evt) {
+									movItemPropertyChange(evt);
+								}
+							});
+							movItem.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									movItemActionPerformed(evt);
+								}
+							});
+						}
+						{
+							aviItem = new JMenuItem();
+							expVideoMenu.add(aviItem);
+							aviItem.setText("AVI");
+							aviItem.addPropertyChangeListener(new PropertyChangeListener() {
+								public void propertyChange(PropertyChangeEvent evt) {
+									aviItemPropertyChange(evt);
+								}
+							});
+							aviItem.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									aviItemActionPerformed(evt);
+								}
+							});
+						}
+					}
+				}
+				{
+					helpMenu = new JMenu();
+					jMenuBar.add(helpMenu);
+					helpMenu.setText("Help");
+				}
+			}
+			{
 				btnPlus = new JButton();
-				getContentPane().add(btnPlus, new AnchorConstraint(857, 66, 881, 43, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnPlus.setText("+");
-				btnPlus.setPreferredSize(new java.awt.Dimension(20, 18));
+				getContentPane().add(btnPlus, new AnchorConstraint(898, 130, 921, 86, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnPlus.setText("[+]");
+				btnPlus.setPreferredSize(new java.awt.Dimension(39, 17));
+				btnPlus.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnPlusActionPerformed(evt);
+					}
+				});
 			}
 			{
 				btnSplit = new JButton();
-				getContentPane().add(btnSplit, new AnchorConstraint(857, 37, 881, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnSplit.setText("|");
-				btnSplit.setPreferredSize(new java.awt.Dimension(21, 18));
+				getContentPane().add(btnSplit, new AnchorConstraint(898, 180, 921, 136, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnSplit.setText("]|[");
+				btnSplit.setPreferredSize(new java.awt.Dimension(39, 17));
 				btnSplit.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnSplitActionPerformed(evt);
@@ -211,21 +356,10 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			{
-				btnCreate = new JButton();
-				getContentPane().add(btnCreate, new AnchorConstraint(578, 285, 610, 212, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnCreate.setText("Create");
-				btnCreate.setPreferredSize(new java.awt.Dimension(65, 24));
-				btnCreate.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnCreateActionPerformed(evt);
-					}
-				});
-			}
-			{
 				jButton1 = new JButton();
-				getContentPane().add(jButton1, new AnchorConstraint(930, 839, 957, 720, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jButton1, new AnchorConstraint(900, 981, 925, 862, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jButton1.setText("Change Caption");
-				jButton1.setPreferredSize(new java.awt.Dimension(106, 20));
+				jButton1.setPreferredSize(new java.awt.Dimension(105, 18));
 				jButton1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						jButton1ActionPerformed(evt);
@@ -234,26 +368,26 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				txtCaptionEdit = new JTextField();
-				getContentPane().add(txtCaptionEdit, new AnchorConstraint(929, 363, 956, 119, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtCaptionEdit.setPreferredSize(new java.awt.Dimension(216, 20));
+				getContentPane().add(txtCaptionEdit, new AnchorConstraint(898, 554, 927, 281, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				txtCaptionEdit.setPreferredSize(new java.awt.Dimension(242, 21));
 			}
 			{
 				jLabel8 = new JLabel();
-				getContentPane().add(jLabel8, new AnchorConstraint(933, 118, 951, 28, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel8, new AnchorConstraint(903, 284, 921, 191, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel8.setText(" Selected Text");
-				jLabel8.setPreferredSize(new java.awt.Dimension(79, 13));
+				jLabel8.setPreferredSize(new java.awt.Dimension(82, 13));
 			}
 			{
 				jLabel7 = new JLabel();
-				getContentPane().add(jLabel7, new AnchorConstraint(933, 631, 952, 545, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel7, new AnchorConstraint(899, 805, 921, 720, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel7.setText("End Time");
-				jLabel7.setPreferredSize(new java.awt.Dimension(76, 14));
+				jLabel7.setPreferredSize(new java.awt.Dimension(76, 16));
 			}
 			{
 				jLabel6 = new JLabel();
-				getContentPane().add(jLabel6, new AnchorConstraint(933, 459, 952, 381, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel6, new AnchorConstraint(899, 646, 923, 568, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel6.setText("Start Time");
-				jLabel6.setPreferredSize(new java.awt.Dimension(69, 14));
+				jLabel6.setPreferredSize(new java.awt.Dimension(69, 17));
 			}
 			{
 				lblCaption = new JLabel();
@@ -266,15 +400,15 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				caption = new JLabel();
-				getContentPane().add(caption, new AnchorConstraint(823, 75, 843, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(caption, new AnchorConstraint(832, 67, 850, 6, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				caption.setText("Caption");
-				caption.setPreferredSize(new java.awt.Dimension(54, 15));
+				caption.setPreferredSize(new java.awt.Dimension(54, 13));
 			}
 			{
 				btnCaption = new JButton();
-				getContentPane().add(btnCaption, new AnchorConstraint(106, 559, 134, 455, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnCaption.setText("Browse");
-				btnCaption.setPreferredSize(new java.awt.Dimension(92, 21));
+				getContentPane().add(btnCaption, new AnchorConstraint(813, 82, 842, 57, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnCaption.setText("+");
+				btnCaption.setPreferredSize(new java.awt.Dimension(22, 21));
 				btnCaption.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCaptionActionPerformed(evt);
@@ -283,8 +417,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				txtCaption = new JTextField();
-				getContentPane().add(txtCaption, new AnchorConstraint(106, 429, 133, 120, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtCaption.setPreferredSize(new java.awt.Dimension(273, 20));
+				getContentPane().add(txtCaption, new AnchorConstraint(580, 870, 608, 817, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				txtCaption.setPreferredSize(new java.awt.Dimension(47, 20));
+				txtCaption.setVisible(false);
 				txtCaption.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						txtCaptionPropertyChange(evt);
@@ -292,22 +427,16 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			{
-				lblText = new JLabel();
-				getContentPane().add(lblText, new AnchorConstraint(109, 93, 132, 7, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				lblText.setText("Add Caption");
-				lblText.setPreferredSize(new java.awt.Dimension(76, 17));
-			}
-			{
 				jLabel5 = new JLabel();
-				getContentPane().add(jLabel5, new AnchorConstraint(744, 84, 767, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel5, new AnchorConstraint(744, 78, 767, 8, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel5.setText("Images");
 				jLabel5.setPreferredSize(new java.awt.Dimension(62, 17));
 			}
 			{
 				jLabel4 = new JLabel();
-				getContentPane().add(jLabel4, new AnchorConstraint(642, 75, 665, 14, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(jLabel4, new AnchorConstraint(651, 68, 673, 8, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jLabel4.setText("Audio");
-				jLabel4.setPreferredSize(new java.awt.Dimension(54, 17));
+				jLabel4.setPreferredSize(new java.awt.Dimension(53, 16));
 			}
 			{
 				/*SpinnerListModel spinnerStartTimeModel = 
@@ -329,9 +458,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnAudioBrowse = new JButton();
-				getContentPane().add(btnAudioBrowse, new AnchorConstraint(19, 558, 47, 455, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnAudioBrowse.setText("Browse");
-				btnAudioBrowse.setPreferredSize(new java.awt.Dimension(91, 21));
+				getContentPane().add(btnAudioBrowse, new AnchorConstraint(637, 82, 667, 57, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnAudioBrowse.setText("+");
+				btnAudioBrowse.setPreferredSize(new java.awt.Dimension(22, 22));
 				btnAudioBrowse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAudioBrowseActionPerformed(evt);
@@ -340,8 +469,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				txtAudio = new JTextField();
-				getContentPane().add(txtAudio, new AnchorConstraint(19, 427, 46, 121, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtAudio.setPreferredSize(new java.awt.Dimension(270, 20));
+				getContentPane().add(txtAudio, new AnchorConstraint(580, 296, 608, 263, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				txtAudio.setPreferredSize(new java.awt.Dimension(30, 20));
+				txtAudio.setVisible(false);
 				txtAudio.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						txtAudioPropertyChange(evt);
@@ -349,16 +479,10 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			{
-				lblAudio = new JLabel();
-				getContentPane().add(lblAudio, new AnchorConstraint(23, 94, 43, 8, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				lblAudio.setText("Add Audio");
-				lblAudio.setPreferredSize(new java.awt.Dimension(76, 15));
-			}
-			{
 				btnStop = new JButton();
-				getContentPane().add(btnStop, new AnchorConstraint(578, 177, 610, 120, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnStop, new AnchorConstraint(580, 251, 609, 194, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnStop.setText("Stop");
-				btnStop.setPreferredSize(new java.awt.Dimension(50, 24));
+				btnStop.setPreferredSize(new java.awt.Dimension(51, 21));
 				btnStop.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnStopActionPerformed(evt);
@@ -367,9 +491,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnPlay = new JButton();
-				getContentPane().add(btnPlay, new AnchorConstraint(579, 115, 611, 8, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(btnPlay, new AnchorConstraint(580, 188, 610, 83, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				btnPlay.setText("Play");
-				btnPlay.setPreferredSize(new java.awt.Dimension(95, 24));
+				btnPlay.setPreferredSize(new java.awt.Dimension(93, 22));
 				btnPlay.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnPlayActionPerformed(evt);
@@ -498,6 +622,9 @@ public class MainFrame extends javax.swing.JFrame {
 									tblImage.setDragEnabled(true);
 									tblImage.setColumnSelectionAllowed(true);
 									tblImage.getTableHeader().setReorderingAllowed(false);
+									tblImage.getTableHeader().setSize(780, 0);
+									tblImage.getTableHeader().setPreferredSize(new java.awt.Dimension(0, 7));
+									tblImage.getTableHeader().setForeground(new java.awt.Color(0,0,0));
 									tblImage.getTableHeader().addMouseListener(new MouseAdapter() {
 										public void mouseReleased(MouseEvent evt) {
 											tableHeaderMouseReleased(evt);
@@ -600,7 +727,9 @@ public class MainFrame extends javax.swing.JFrame {
 					tblCaption.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 					tblCaption.setRowHeight(30);
 					tblCaption.getTableHeader().setReorderingAllowed(false);
+					tblCaption.setCellSelectionEnabled(true);
 					tblCaption.addMouseListener(new MouseAdapter() {
+						
 						public void mouseReleased(MouseEvent evt) {
 							tblCaptionMouseReleased(evt);
 						}
@@ -634,9 +763,10 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				txtImageLink = new JTextField();
-				getContentPane().add(txtImageLink, new AnchorConstraint(62, 427, 89, 120, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(txtImageLink, new AnchorConstraint(580, 620, 608, 585, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				txtImageLink.setText("");
-				txtImageLink.setPreferredSize(new java.awt.Dimension(271, 20));
+				txtImageLink.setPreferredSize(new java.awt.Dimension(31, 20));
+				txtImageLink.setVisible(false);
 				txtImageLink.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						txtImageLinkPropertyChange(evt);
@@ -646,9 +776,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			{
 				btnBrowse = new JButton();
-				getContentPane().add(btnBrowse, new AnchorConstraint(62, 559, 90, 455, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				btnBrowse.setText("Browse");
-				btnBrowse.setPreferredSize(new java.awt.Dimension(92, 21));
+				getContentPane().add(btnBrowse, new AnchorConstraint(708, 82, 737, 57, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				btnBrowse.setText("+");
+				btnBrowse.setPreferredSize(new java.awt.Dimension(22, 21));
 				btnBrowse.setMinimumSize(new java.awt.Dimension(75, 56));
 				btnBrowse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -657,12 +787,6 @@ public class MainFrame extends javax.swing.JFrame {
 				});
 			}
 			
-			{
-				jLabel1 = new JLabel();
-				getContentPane().add(jLabel1, new AnchorConstraint(65, 100, 86, 7, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				jLabel1.setText("Add Images");
-				jLabel1.setPreferredSize(new java.awt.Dimension(82, 16));
-			}
 			{
 				Number value = 0;
 				Number stetpsize =1;
@@ -685,10 +809,10 @@ public class MainFrame extends javax.swing.JFrame {
 				Number stetpsize =1;
 				SpinnerNumberModel spinnerCaptinEndTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
 				spinnerCaptionStartTime = new JSpinner();
-				getContentPane().add(spinnerCaptionStartTime, new AnchorConstraint(929, 527, 956, 447, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerCaptionStartTime, new AnchorConstraint(896, 706, 924, 628, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerCaptionStartTime.setModel(spinnerCaptinEndTimeModel);
 				//spinnerCaptionStartTime.setValue(0);
-				spinnerCaptionStartTime.setPreferredSize(new java.awt.Dimension(71, 20));
+				spinnerCaptionStartTime.setPreferredSize(new java.awt.Dimension(69, 20));
 				spinnerCaptionStartTime.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent evt) {
 						spinnerCaptionStartTimeStateChanged(evt);
@@ -700,10 +824,10 @@ public class MainFrame extends javax.swing.JFrame {
 				Number stetpsize =1;
 				SpinnerNumberModel spinnerCaptinStartTimeModel = new SpinnerNumberModel(value,0,null,stetpsize);
 				spinnerCaptionEndTime = new JSpinner();
-				getContentPane().add(spinnerCaptionEndTime, new AnchorConstraint(929, 681, 956, 600, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				getContentPane().add(spinnerCaptionEndTime, new AnchorConstraint(896, 853, 924, 773, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				spinnerCaptionEndTime.setModel(spinnerCaptinStartTimeModel);
 				//spinnerCaptionEndTime.setValue(0);
-				spinnerCaptionEndTime.setPreferredSize(new java.awt.Dimension(72, 20));
+				spinnerCaptionEndTime.setPreferredSize(new java.awt.Dimension(71, 20));
 				spinnerCaptionEndTime.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent evt) {
 						spinnerCaptionEndTimeStateChanged(evt);
@@ -740,6 +864,11 @@ public class MainFrame extends javax.swing.JFrame {
 		columnMoved = false;
 		selectedCaption = -1;
 		gapFiller = 0;
+		zoomingFactor = 1 ;
+		minimumZoomingFactor = 1 ;
+		sliderWidth = 3006;
+		
+		//captionPropertyChanged = true;
 		
 	}
 	
@@ -1219,6 +1348,10 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println(audioPath);
 		if(!audioPath.equals(""))
 		{
+			//resetting audio , image and caption time lines
+			sliderWidth = 3006;
+			zoomAudioTimeLine(1);
+			
 			
 			audioDecoder = new DecodeAndPlayAudio();
 			AudioData audioData = audioDecoder.getAudioData(audioPath);
@@ -1226,17 +1359,26 @@ public class MainFrame extends javax.swing.JFrame {
 			noOfAudioSamples = audioData.getSongLength();
 			if(slider.getMaximum()< audioDuration)
 			{
-				int sliderWidth = 3006;
-				int newSliderWidth = audioDuration*(sliderWidth/400);
+				sliderWidth = audioDuration*(sliderWidth/400);
 				slider.setMaximum(audioDuration);
-				slider.setPreferredSize(new Dimension(newSliderWidth,slider.getHeight()));
-				slider.setMinimumSize(new Dimension(newSliderWidth,slider.getHeight()));
-				slider.setMaximumSize(new Dimension(newSliderWidth,slider.getHeight()));
-				slider.resize(new Dimension(newSliderWidth,slider.getHeight()));
+				slider.setPreferredSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.setMinimumSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.setMaximumSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.resize(new Dimension(sliderWidth,slider.getHeight()));
+					
+				zoomImageTimeLine(1);
+				zoomCaptionTimeLine();
+			}
+			else
+			{
+				slider.setMaximum(400);
+				slider.setPreferredSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.setMinimumSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.setMaximumSize(new Dimension(sliderWidth,slider.getHeight()));
+				slider.resize(new Dimension(sliderWidth,slider.getHeight()));
 				
-				
-				
-				
+				zoomImageTimeLine(1);
+				zoomCaptionTimeLine();
 			}
 			tickWeight = (float)noOfAudioSamples/audioDuration;
 			System.out.println(tickWeight);
@@ -1430,6 +1572,7 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println((String) tblCaption.getValueAt(0,selectedCoulumn));
 		captionArray.get(selectedCoulumn).setCaption((String) tblCaption.getValueAt(0,selectedCoulumn));
 		}
+		//captionPropertyChanged = true;
 	}
 	
 	private void tblCaptionKeyTyped(KeyEvent evt) {
@@ -1438,47 +1581,57 @@ public class MainFrame extends javax.swing.JFrame {
 		int selectedColumn;
 		if(keyvalue == 127)
 		{
-			selectedColumn = tblCaption.getSelectedColumn();
-			tblCaption.getColumnModel().removeColumn(tblCaption.getColumnModel().getColumn(selectedColumn));
-			int newStartTime = captionArray.get(selectedColumn).getStartTime();
-			captionArray.remove(selectedColumn);
-			System.out.println("after remove caption"+ captionArray.size());
-		
-			for(int i= selectedColumn ; i < captionArray.size() ; i++)
-			{
-				int width = captionArray.get(i).getEndTime() - captionArray.get(i).getStartTime();
-				captionArray.get(i).setStartTime(newStartTime);
-				captionArray.get(i).setEndTime(newStartTime +width);
-				newStartTime = captionArray.get(i).getEndTime();
-				
-			}
-			for(int i=0 ; i < captionArray.size() ; i++)
-			{
-				tblCaption.getModel().setValueAt(captionArray.get(i).getCaption(),0,i);
-			}
 			
-			ArrayList<String> captionString = new ArrayList<String>();
-			for(int i=0; i< captionArray.size() ; i++)
-			{
-				captionString.add(captionArray.get(i).getCaption());
-			}
-			
-			TableModel tblCaptionModel = new CaptionTableModel(captionString);
-			tblCaption.setModel(tblCaptionModel);
-			
-			for(int i=0; i< captionArray.size() ; i++)
-			{
-				int width = Math.round(spacing*(captionArray.get(i).getEndTime() - captionArray.get(i).getStartTime()));
-				System.out.println("captions" +captionArray.get(i).getCaption());
-				//tblCaption.getModel().setValueAt(captionArray.get(i).getCaption(), 0,i);
-				tblCaption.getColumnModel().getColumn(i).setPreferredWidth(width);
-				
-			}
-					
-			
+			int[] selectedColumns = tblCaption.getSelectedColumns();
+			int selectedColumnCount = tblCaption.getSelectedColumnCount();
 			tblCaption.clearSelection();
-			tblCaption.revalidate();
-			tblCaption.repaint();
+		
+			for(int j=0; j< selectedColumnCount ; j++ )
+			{
+				
+				//captionPropertyChanged = false;
+				selectedColumn = selectedColumns[j]-j;
+				System.out.println("Selected Column ="+ selectedColumn);
+				
+				tblCaption.getColumnModel().removeColumn(tblCaption.getColumnModel().getColumn(selectedColumn));
+				int newStartTime = captionArray.get(selectedColumn).getStartTime();
+				captionArray.remove(selectedColumn);
+				System.out.println("after remove caption"+ captionArray.size());
+		
+				for(int i= selectedColumn ; i < captionArray.size() ; i++)
+				{
+					int width = captionArray.get(i).getEndTime() - captionArray.get(i).getStartTime();
+					captionArray.get(i).setStartTime(newStartTime);
+					captionArray.get(i).setEndTime(newStartTime +width);
+					newStartTime = captionArray.get(i).getEndTime();
+				}
+				
+				for(int i=0 ; i < captionArray.size() ; i++)
+				{
+					tblCaption.getModel().setValueAt(captionArray.get(i).getCaption(),0,i);
+				}
+			
+				ArrayList<String> captionString = new ArrayList<String>();
+				for(int i=0; i< captionArray.size() ; i++)
+				{
+					captionString.add(captionArray.get(i).getCaption());
+				}
+			
+				TableModel tblCaptionModel = new CaptionTableModel(captionString);
+				tblCaption.setModel(tblCaptionModel);
+			
+				for(int i=0; i< captionArray.size() ; i++)
+				{
+					int width = Math.round(spacing*(captionArray.get(i).getEndTime() - captionArray.get(i).getStartTime()));
+					System.out.println("captions" +captionArray.get(i).getCaption());
+					//tblCaption.getModel().setValueAt(captionArray.get(i).getCaption(), 0,i);
+					tblCaption.getColumnModel().getColumn(i).setPreferredWidth(width);
+				}
+			}
+						
+				tblCaption.clearSelection();
+				tblCaption.revalidate();
+				tblCaption.repaint();
 			
 			
 		}
@@ -1782,7 +1935,7 @@ public class MainFrame extends javax.swing.JFrame {
 					
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime())));
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 					
 				}
@@ -1790,14 +1943,14 @@ public class MainFrame extends javax.swing.JFrame {
 				{
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime())));
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 				}
 				
 			}
 			else if(endTime > currentCaptionData.getEndTime())
 			{
-				if((selectedImage.getIndex()+1) < imageArray.size() )
+				if((selectedCaption+1) < captionArray.size() )
 				{
 					CaptionData nextCaptionData =captionArray.get(selectedCaption+1) ;
 					int timeDifference = endTime - currentCaptionData.getEndTime();
@@ -1807,14 +1960,14 @@ public class MainFrame extends javax.swing.JFrame {
 					
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime())));
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 				}
 				else
 				{
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime())));
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 				}
 				
@@ -1837,7 +1990,7 @@ public class MainFrame extends javax.swing.JFrame {
 					
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime()))+gapFiller);
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 					
 				}
@@ -1852,7 +2005,7 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 			else if(endTime > currentCaptionData.getEndTime())
 			{
-				if((selectedImage.getIndex()+1) < imageArray.size() )
+				if((selectedCaption+1) < captionArray.size() )
 				{
 					CaptionData nextCaptionData =captionArray.get(selectedCaption+1) ;
 					int timeDifference = endTime - currentCaptionData.getEndTime();
@@ -1862,7 +2015,7 @@ public class MainFrame extends javax.swing.JFrame {
 					
 					currentCaptionData.setEndTime(endTime);
 					tblCaption.getColumnModel().getColumn(selectedCaption).setPreferredWidth(Math.round(spacing*(currentCaptionData.getEndTime()-currentCaptionData.getStartTime()))+gapFiller);
-					tblImage.doLayout();
+					tblCaption.doLayout();
 					captionArray.set(selectedCaption, currentCaptionData);
 				}
 				else
@@ -1903,8 +2056,21 @@ public class MainFrame extends javax.swing.JFrame {
 	
 	private void btnCreateActionPerformed(ActionEvent evt) {
 		System.out.println("btnCreate.actionPerformed, event="+evt);
-		ImagesToVideo iToVideo = new ImagesToVideo();
-		iToVideo.createVideo(imageArray);
+		String videoName = "video2.avi";
+		ImagesToVideo iToVideo = new ImagesToVideo(videoName);
+		iToVideo.createVideo(imageArray,videoName);
+		
+		
+		String command = new String("ffmpeg -i "+videoName+" -i \""+audioPath+"\" -acodec copy -vcodec copy final3.mov");
+		System.out.println(command);
+		try {
+			Process p = Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	private void btnSplitActionPerformed(ActionEvent evt) {
@@ -1955,5 +2121,198 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 	
+	private void btnPlusActionPerformed(ActionEvent evt) {
+		System.out.println("btnPlus.actionPerformed, event="+evt);
+		int [] selectedCells = tblCaption.getSelectedColumns();
+		int selectedColumnCount = tblCaption.getSelectedColumnCount();
+		boolean consecutiveColumns= true;
+		tblCaption.clearSelection();
+		
+		for(int i=0 ; i < selectedColumnCount-1 ; i++)
+		{
+		   int currentColumn = selectedCells[i];
+		   int nextColumn = selectedCells[i+1];
+		   
+		   if(nextColumn == (currentColumn+1))
+		   {
+			   consecutiveColumns = true;
+		   }
+		   else
+		   {
+			   consecutiveColumns = false ;
+			  break;
+		   }
+		}
+		
+		System.out.println("Merge Allowed ="+ consecutiveColumns);
+		
+		if(consecutiveColumns && (selectedColumnCount >1))
+		{
+			int newStartTime = captionArray.get(selectedCells[0]).getStartTime();
+			int newEndTime = captionArray.get(selectedCells[selectedColumnCount-1]).getEndTime();
+			String newCaption = captionArray.get(selectedCells[0]).getCaption();
+			
+			captionArray.get(selectedCells[0]).setStartTime(newStartTime);
+			captionArray.get(selectedCells[0]).setEndTime(newEndTime);
+			
+			
+			
+			for(int i = 0 ; i < (selectedColumnCount -1) ; i++)
+			{
+				int selectedCell = selectedCells[i]-i;
+				newCaption = newCaption +  captionArray.get(selectedCell +1).getCaption();
+				captionArray.remove(selectedCell +1);
+				tblCaption.getColumnModel().removeColumn(tblCaption.getColumnModel().getColumn(selectedCell +1));
+			}
+			
+			captionArray.get(selectedCells[0]).setCaption(newCaption);
+			tblCaption.getModel().setValueAt(captionArray.get(selectedCells[0]).getCaption(),0,selectedCells[0]);
+			
+			ArrayList<String> captionString = new ArrayList<String>();
+			for(int i=0; i< captionArray.size() ; i++)
+			{
+				captionString.add(captionArray.get(i).getCaption());
+			}
+		
+			TableModel tblCaptionModel = new CaptionTableModel(captionString);
+			tblCaption.setModel(tblCaptionModel);
+			
+			for(int i=0 ; i < captionArray.size();i++)
+			{
+				int width = Math.round(spacing*(captionArray.get(i).getEndTime() - captionArray.get(i).getStartTime()));
+				tblCaption.getColumnModel().getColumn(i).setPreferredWidth(width);
+			}
+			
+			//int width = Math.round(spacing*(captionArray.get(selectedCells[0]).getEndTime() - captionArray.get(selectedCells[0]).getStartTime()));
+			//tblCaption.getColumnModel().getColumn(selectedCells[0]).setPreferredWidth(width);
+			
+
+			tblCaption.revalidate();
+			tblCaption.repaint();
+			
+			
+		}
+	}
+	
+	private void movItemActionPerformed(ActionEvent evt) {
+		System.out.println("movItem.actionPerformed, event="+evt);
+		FileChooser fc = new FileChooser(movItem);
+		
+	}
+	
+	private void aviItemActionPerformed(ActionEvent evt) {
+		System.out.println("aviItem.actionPerformed, event="+evt);
+		FileChooser fc = new FileChooser(aviItem);
+		
+	}
+	
+	private void movItemPropertyChange(PropertyChangeEvent evt) {
+		System.out.println("movItem.propertyChange, event="+evt);
+		if(!evt.getPropertyName().equals("ancestor") && (audioPath != null) )
+		{
+			System.out.println("Property name" +evt.getPropertyName());
+			String video = "video.avi";
+			ImagesToVideo iToVideo = new ImagesToVideo(video);
+			iToVideo.createVideo(imageArray,video);
+			String savingPath = evt.getPropertyName()+".mov";
+		
+			if(savingPath != null)
+			{
+				String command = new String("ffmpeg -i "+video+" -i \""+audioPath+"\" -acodec copy -vcodec copy \""+savingPath +"\"");
+				System.out.println(command);
+				try {
+					Process p = Runtime.getRuntime().exec(command);
+				} catch (IOException e) {
+			// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
+			}
+		}	
+	
+	}
+	
+	private void aviItemPropertyChange(PropertyChangeEvent evt) {
+		if(!evt.getPropertyName().equals("ancestor")  && (audioPath != null))
+		{
+			System.out.println("aviItem.propertyChange, event="+evt);
+			String video = "video.avi";
+			ImagesToVideo iToVideo = new ImagesToVideo(video);
+			iToVideo.createVideo(imageArray,video);
+			String savingPath = evt.getPropertyName()+".avi";
+		
+			if(savingPath != null)
+			{
+				String command = new String("ffmpeg -i "+video+" -i \""+audioPath+"\" -acodec copy -vcodec copy \""+savingPath +"\"");
+				System.out.println(command);
+				try {
+					Process p = Runtime.getRuntime().exec(command);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	private void zoomAudioTimeLine(int zoomFactor)
+	{
+		
+		int newSliderWidth = (zoomFactor)*(sliderWidth);
+	
+		slider.setPreferredSize(new Dimension(newSliderWidth,slider.getHeight()));
+		slider.setMinimumSize(new Dimension(newSliderWidth,slider.getHeight()));
+		slider.setMaximumSize(new Dimension(newSliderWidth,slider.getHeight()));
+		slider.resize(new Dimension(newSliderWidth,slider.getHeight()));
+		
+	}
+	
+	private void zoomImageTimeLine(int zoomFactor)
+	{
+		spacing = (float)slider.getWidth()/slider.getMaximum();
+		//float newSpacing = spacing * zoomFactor;	
+		
+		for(int i= 0 ; i < imageArray.size() ; i++)
+		{
+			tblImage.getColumnModel().getColumn(i).setPreferredWidth(Math.round(spacing*(imageArray.get(i).getEndTime()-imageArray.get(i).getStartTime())));
+			
+		}
+		tblImage.doLayout();
+	}
+	
+	private void zoomCaptionTimeLine()
+	{
+		spacing = (float)slider.getWidth()/slider.getMaximum();	
+		
+		for(int i= 0 ; i < captionArray.size() ; i++)
+		{
+			tblCaption.getColumnModel().getColumn(i).setPreferredWidth(Math.round(spacing*(captionArray.get(i).getEndTime()-captionArray.get(i).getStartTime())));
+		}
+		
+	}
+	
+	private void btnZoomInActionPerformed(ActionEvent evt) {
+		System.out.println("btnZoomIn.actionPerformed, event="+evt);
+		zoomingFactor = zoomingFactor+1;
+		
+		zoomAudioTimeLine(zoomingFactor);
+		zoomImageTimeLine(zoomingFactor);
+		zoomCaptionTimeLine();
+		
+	}
+	
+	private void btnZoomOutActionPerformed(ActionEvent evt) {
+		System.out.println("btnZoomOut.actionPerformed, event="+evt);
+		
+		if(zoomingFactor > 1)
+		{
+			zoomingFactor = zoomingFactor -1;
+			zoomAudioTimeLine(zoomingFactor);
+			zoomImageTimeLine(zoomingFactor);
+			zoomCaptionTimeLine();
+		}
+		
+	}
 
 }
