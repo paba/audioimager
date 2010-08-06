@@ -195,7 +195,7 @@ public class DecodeAndPlayAudio implements Runnable{
 	         * Keep going until we've processed all data
 	         */
 	        
-	        System.out.println(songLen+"  "+packet.getDuration()+ "packet size "+ packet.getSize());
+	        //System.out.println(songLen+"  "+packet.getDuration()+ "packet size "+ packet.getSize());
 	        
 	        if (songLen>startingPoint)
 	        while(offset < packet.getSize())
@@ -216,7 +216,7 @@ public class DecodeAndPlayAudio implements Runnable{
 	          {
 	            playJavaSound(samples);
 	          }
-	          System.out.println("Song Length " +songLen + " tickSpacing" + tickSpacing+ " slider value " +((int) (songLen/tickSpacing)) );
+	          //System.out.println("Song Length " +songLen + " tickSpacing" + tickSpacing+ " slider value " +((int) (songLen/tickSpacing)) );
 	          slider.setValue((int) (songLen/tickSpacing));
 	         
 	          //slider.firePropertyChange("Value",false,true);

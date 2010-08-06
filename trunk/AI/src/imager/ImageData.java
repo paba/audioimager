@@ -8,17 +8,28 @@ public class ImageData {
 	private int endTime;
 	private int index;
 	private String path;
+	private AttributionData attData=null;
 	private Image image;
 	
-	ImageData (int start, int end, int id, String url, Image picture)
+	public ImageData (int start, int end, int id, String url, Image picture,AttributionData attData)
 	{
 		startTime = start;
 		endTime = end;
 		index = id;
 		path = url;
 		image = picture;
+		this.attData = attData;
 	}
 	
+	public AttributionData getAttribution()
+	{
+		return this.attData;
+	}
+	public void setAttribution(AttributionData attribution)
+	{
+		System.out.println(attribution);
+		this.attData = attribution;
+	}
 	public int getStartTime()
 	{
 		return startTime;

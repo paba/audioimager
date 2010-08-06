@@ -3,6 +3,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileFilter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -11,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 /**
@@ -51,10 +53,10 @@ public class FileChooser extends javax.swing.JFrame{
 		this.setVisible(true);	
 	}
 	
-	public FileChooser(JMenuItem item) {
+	public FileChooser(JMenuItem item,String type) {
 		super();
 		menuItem = item;
-		initTxtGUI();
+		initTxtGUI(type);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);	
 	}
@@ -75,7 +77,7 @@ public class FileChooser extends javax.swing.JFrame{
 		this.setVisible(true);	
 	}
 	*/
-	private void initTxtGUI() {
+	private void initTxtGUI(String type) {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			
@@ -85,6 +87,20 @@ public class FileChooser extends javax.swing.JFrame{
 				filechooser = new JFileChooser();
 				getContentPane().add(filechooser, new AnchorConstraint(1, 991, 976, 3, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				filechooser.setPreferredSize(new java.awt.Dimension(494, 308));
+				if(type.equals("SAVE_PROJECT"))
+				{
+					filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					filechooser.setApproveButtonText("Save");
+					filechooser.setDialogTitle("Save Project");
+					
+				}
+				else if(type.equals("OPEN_PROJECT"))
+				{
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Files","XML");
+					filechooser.setFileFilter(filter);				
+					filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				}
+				
 				filechooser.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						try {

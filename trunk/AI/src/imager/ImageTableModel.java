@@ -13,12 +13,13 @@ public class ImageTableModel extends AbstractTableModel {
 		    
 		    public ImageTableModel()
 		    {
-		    	imageList = new ArrayList<ImageData>() ;
+		    	this.imageList = new ArrayList<ImageData>() ;
 		    	
 		    }
 		    
 		   public void removeValueAt(int col)
 		   {
+			  
 			   imageList.remove(col);
 			  
 		   }
@@ -63,7 +64,7 @@ public class ImageTableModel extends AbstractTableModel {
 		    public boolean isCellEditable(int row, int col) {
 		      //Note that the data/cell address is constant,
 		      //no matter where the cell appears onscreen.
-		      return true;
+		      return false;
 		      
 		    }
 
