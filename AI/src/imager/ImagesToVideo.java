@@ -36,6 +36,7 @@ import com.xuggle.xuggler.IRational;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
+import com.xuggle.xuggler.IVideoPicture.PictType;
 import com.xuggle.xuggler.video.ConverterFactory;
 import com.xuggle.xuggler.video.IConverter;
 
@@ -99,7 +100,7 @@ public class ImagesToVideo{
         
         index ++;
         }
-        System.out.println("outputFile.flv is ready");
+        System.out.println("Imagers are converted to a video");
         }
 
         public ImagesToVideo(String outputFile){
