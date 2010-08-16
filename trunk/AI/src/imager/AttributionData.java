@@ -1,59 +1,54 @@
 package imager;
 
 import java.net.URL;
-
+/**
+ * Represents AttributionData related to images.
+ * @author Kumaripaba Athukorala
+ *
+ */
 public class AttributionData {
-	
+
 	int license;
 	String title;
 	String ownerName;
 	URL url;
-	
-	public AttributionData(int license,String title,String ownerName,URL url)
-	{
+
+	public AttributionData(int license, String title, String ownerName, URL url) {
 		this.license = license;
 		this.title = title;
 		this.ownerName = ownerName;
 		this.url = url;
 	}
-	
-	public void setLicense(int license)
-	{
+
+	public void setLicense(int license) {
 		this.license = license;
 	}
-	
-	public void setTitle(String title)
-	{
+
+	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public void setOwnerName(String ownerName)
-	{
+
+	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
 	}
-	
-	public void setURL(URL url)
-	{
+
+	public void setURL(URL url) {
 		this.url = url;
 	}
-	
-	public int getLicense()
-	{
+
+	public int getLicense() {
 		return this.license;
 	}
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return this.title;
 	}
-	
-	public String getOwnerName()
-	{
+
+	public String getOwnerName() {
 		return this.ownerName;
 	}
-	
-	public URL getUrl()
-	{
+
+	public URL getUrl() {
 		return this.url;
 	}
 }
