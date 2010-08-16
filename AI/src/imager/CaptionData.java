@@ -1,45 +1,43 @@
 package imager;
+/**
+ * Represents data related to a caption
+ * @author Kumaripaba Athukorala
+ *
+ */
 
 public class CaptionData {
-	
+
 	int captionStartTime;
 	int captionEndTime;
 	String caption;
-	
-	public CaptionData(int startTime, int endTime, String cap)
-	{
+
+	public CaptionData(int startTime, int endTime, String cap) {
 		this.captionStartTime = startTime;
 		this.captionEndTime = endTime;
 		this.caption = cap;
 	}
 
-	public int getStartTime()
-	{
+	public int getStartTime() {
 		return this.captionStartTime;
 	}
-	
-	public int getEndTime()
-	{
+
+	public int getEndTime() {
 		return this.captionEndTime;
 	}
-	
-	public String getCaption()
-	{
+
+	public String getCaption() {
 		return this.caption;
 	}
-	
-	public void setStartTime(int startTime)
-	{
+
+	public void setStartTime(int startTime) {
 		this.captionStartTime = startTime;
 	}
-	
-	public void setEndTime(int endTime)
-	{
+
+	public void setEndTime(int endTime) {
 		this.captionEndTime = endTime;
 	}
-	
-	public void setCaption(String cap)
-	{
+
+	public void setCaption(String cap) {
 		this.caption = cap;
 	}
 }
