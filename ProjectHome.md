@@ -1,0 +1,1 @@
+AudioImager is a desktop application which automatically creates a video for an audio track.
